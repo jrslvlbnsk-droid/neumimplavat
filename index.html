@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neumimplavat — Anna Labuťová</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #1a0f2e;
@@ -25,7 +25,7 @@
   body {
     background: var(--deep);
     color: var(--cream);
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Inter', sans-serif;
     overflow-x: hidden;
     cursor: none;
   }
@@ -103,9 +103,9 @@
   }
 
   .nav-links a {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
-    font-style: italic;
+    font-weight: 400;
     color: var(--cream);
     text-decoration: none;
     letter-spacing: 0.1em;
@@ -169,7 +169,7 @@
   .hero-sub {
     margin-top: 2.5rem;
     font-size: 1.2rem;
-    font-style: italic;
+    font-weight: 400;
     color: var(--mist);
     letter-spacing: 0.05em;
     max-width: 420px;
@@ -354,437 +354,74 @@
     font-family: 'IM Fell English', serif;
     font-style: italic;
     font-size: 2.5rem;
-    color: var(--gold);
-    opacity: 0.8;
-  }
-
-  /* ─── GALLERY ─── */
-  #gallery {
-    position: relative;
-    z-index: 2;
-    padding: 8rem 6vw;
-  }
-
-  .gallery-header {
-    text-align: center;
-    margin-bottom: 5rem;
-  }
-
-  .gallery-header h2 {
-    font-family: 'IM Fell English', serif;
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    color: var(--cream);
-    font-weight: 400;
-    line-height: 1;
-  }
-
-  .gallery-header h2 em {
-    display: block;
     color: var(--lilac);
-    font-style: italic;
-  }
-
-  .gallery-header p {
-    margin-top: 1.5rem;
-    font-style: italic;
-    color: var(--mist);
-    font-size: 1.1rem;
-    letter-spacing: 0.05em;
-  }
-
-  /* Masonry-like gallery */
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: auto;
-    gap: 1.5rem;
-  }
-
-  .gallery-item {
-    overflow: hidden;
-    position: relative;
-    cursor: none;
-    background: var(--teal);
-  }
-
-  .gallery-item:nth-child(1) { grid-column: 1 / 6; grid-row: 1 / 3; aspect-ratio: 3/4; }
-  .gallery-item:nth-child(2) { grid-column: 6 / 9; grid-row: 1; aspect-ratio: 1; }
-  .gallery-item:nth-child(3) { grid-column: 9 / 13; grid-row: 1 / 3; aspect-ratio: 3/4; }
-  .gallery-item:nth-child(4) { grid-column: 6 / 9; grid-row: 2; aspect-ratio: 1; }
-  .gallery-item:nth-child(5) { grid-column: 1 / 5; grid-row: 3; aspect-ratio: 4/3; }
-  .gallery-item:nth-child(6) { grid-column: 5 / 9; grid-row: 3; aspect-ratio: 4/3; }
-  .gallery-item:nth-child(7) { grid-column: 9 / 13; grid-row: 3; aspect-ratio: 4/3; }
-
-  .gallery-canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  .gallery-item:hover .gallery-canvas {
-    transform: scale(1.06);
-  }
-
-  .gallery-caption {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 2rem 1.5rem 1.5rem;
-    background: linear-gradient(to top, rgba(13,27,42,0.95), transparent);
-    transform: translateY(100%);
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  .gallery-item:hover .gallery-caption {
-    transform: translateY(0);
-  }
-
-  .gallery-caption h3 {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 1.2rem;
-    color: var(--cream);
-  }
-
-  .gallery-caption span {
-    font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-transform: uppercase;
-    display: block;
-    margin-top: 0.3rem;
-  }
-
-  /* ─── PHILOSOPHY ─── */
-  #philosophy {
-    position: relative;
-    z-index: 2;
-    padding: 10rem 6vw;
-    text-align: center;
-    background: linear-gradient(to bottom, transparent, rgba(201,168,212,0.05), transparent);
-  }
-
-  .philosophy-quote {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    line-height: 1.5;
-    color: var(--cream);
-    max-width: 900px;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  .philosophy-quote::before, .philosophy-quote::after {
-    content: '"';
-    font-size: 8rem;
-    color: var(--lilac);
-    opacity: 0.2;
-    position: absolute;
-    line-height: 0;
-  }
-
-  .philosophy-quote::before { top: 3rem; left: -2rem; }
-  .philosophy-quote::after { content: '"'; bottom: -1rem; right: -2rem; }
-
-  .philosophy-attr {
-    margin-top: 3rem;
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.4em;
-    color: var(--gold);
-    text-transform: uppercase;
-  }
-
-  /* ─── BOOKING ─── */
-  #booking {
-    position: relative;
-    z-index: 2;
-    padding: 8rem 6vw;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8rem;
-    align-items: start;
-  }
-
-  .booking-info h2 {
-    font-family: 'IM Fell English', serif;
-    font-size: clamp(3rem, 5vw, 4.5rem);
-    color: var(--cream);
-    font-weight: 400;
-    line-height: 1.1;
-    margin-bottom: 2rem;
-  }
-
-  .booking-info h2 em { color: var(--coral); font-style: italic; }
-
-  .booking-info p {
-    font-size: 1.05rem;
-    line-height: 2;
-    color: rgba(245,237,224,0.7);
-    margin-bottom: 1.5rem;
-    font-weight: 300;
-  }
-
-  .booking-details {
-    margin-top: 3rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .booking-detail-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(212,168,75,0.15);
-  }
-
-  .detail-icon {
-    width: 40px;
-    height: 40px;
-    border: 1px solid rgba(212,168,75,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 1.1rem;
-  }
-
-  .detail-text strong {
-    display: block;
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 0.3rem;
-  }
-
-  .detail-text span {
-    font-style: italic;
-    color: rgba(245,237,224,0.7);
-    font-size: 0.95rem;
-  }
-
-  /* Form */
-  .booking-form {
-    background: rgba(26,74,92,0.15);
-    border: 1px solid rgba(212,168,75,0.15);
-    padding: 3.5rem;
-    backdrop-filter: blur(10px);
-  }
-
-  .form-title {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 1.8rem;
-    color: var(--cream);
-    margin-bottom: 2.5rem;
-  }
-
-  .form-group {
-    margin-bottom: 1.8rem;
-    position: relative;
-  }
-
-  .form-group label {
-    display: block;
-    font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.35em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 0.6rem;
-  }
-
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    width: 100%;
-    background: rgba(13,27,42,0.6);
-    border: none;
-    border-bottom: 1px solid rgba(212,168,75,0.3);
-    padding: 0.8rem 0;
-    color: var(--cream);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    font-style: italic;
-    outline: none;
-    transition: border-color 0.3s;
-    -webkit-appearance: none;
-  }
-
-  .form-group select option {
-    background: var(--deep);
-    color: var(--cream);
-  }
-
-  .form-group input:focus,
-  .form-group textarea:focus,
-  .form-group select:focus {
-    border-bottom-color: var(--gold);
-  }
-
-  .form-group textarea {
-    min-height: 100px;
-    resize: vertical;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-
-  .submit-btn {
-    width: 100%;
-    margin-top: 1rem;
-    padding: 1.2rem;
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    cursor: none;
-    position: relative;
-    overflow: hidden;
-    transition: color 0.4s;
-  }
-
-  .submit-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gold);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s ease;
-  }
-
-  .submit-btn:hover { color: var(--deep); }
-  .submit-btn:hover::before { transform: scaleX(1); }
-
-  .submit-btn span { position: relative; z-index: 1; }
-
-  /* ─── FOOTER ─── */
-  footer {
-    position: relative;
-    z-index: 2;
-    padding: 5rem 6vw 3rem;
-    border-top: 1px solid rgba(212,168,75,0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 2rem;
-  }
-
-  .footer-brand {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    font-size: 3rem;
-    color: var(--cream);
-    line-height: 1;
     opacity: 0.7;
   }
 
-  .footer-brand small {
-    display: block;
-    font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.4em;
-    color: var(--gold);
-    font-style: normal;
-    margin-top: 0.5rem;
-    opacity: 0.8;
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .footer-links a {
-    font-style: italic;
-    color: rgba(245,237,224,0.5);
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.3s;
-  }
-
-  .footer-links a:hover { color: var(--gold); }
-
-  .footer-copy {
-    width: 100%;
-    text-align: center;
-    font-family: 'Cinzel', serif;
-    font-size: 0.55rem;
-    letter-spacing: 0.3em;
-    color: rgba(245,237,224,0.2);
-    text-transform: uppercase;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255,255,255,0.05);
-  }
-
-  /* ─── KEYFRAMES ─── */
+  /* ─── ANIMATIONS ─── */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
+    from { opacity: 0; transform: translateY(40px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
   @keyframes fadeIn {
-    from { opacity: 0; }
     to { opacity: 1; }
   }
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.6; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(1.1); }
-  }
 
-  /* ─── SCROLL REVEAL ─── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.9s ease, transform 0.9s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
   }
 
   /* ─── RESPONSIVE ─── */
-  @media (max-width: 900px) {
-    nav { padding: 1.5rem 2rem; }
-    .nav-links { display: none; }
-    #about { grid-template-columns: 1fr; }
-    .about-canvas-mock { min-height: 350px; }
-    .about-content { padding: 4rem 2.5rem; }
-    #booking { grid-template-columns: 1fr; gap: 4rem; padding: 5rem 2.5rem; }
-    .gallery-item:nth-child(1) { grid-column: 1 / 8; }
-    .gallery-item:nth-child(2) { grid-column: 8 / 13; }
-    .gallery-item:nth-child(3) { grid-column: 1 / 7; }
-    .gallery-item:nth-child(4) { grid-column: 7 / 13; }
-    .gallery-item:nth-child(5),
-    .gallery-item:nth-child(6),
-    .gallery-item:nth-child(7) { grid-column: 1 / 13; }
-    .form-row { grid-template-columns: 1fr; }
-    footer { flex-direction: column; align-items: flex-start; }
+  @media (max-width: 1024px) {
+    nav { padding: 1.5rem 3rem; }
+    
+    #hero { padding: 0 5vw; }
+    
+    .hero-title { font-size: clamp(4rem, 10vw, 8rem); }
+    
+    #about {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+    
+    .about-content { padding: 5rem 4rem; }
+    
+    .about-content h2 { font-size: 2.8rem; }
+  }
+
+  @media (max-width: 768px) {
+    nav {
+      padding: 1rem 2rem;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .nav-links { gap: 2rem; }
+    
+    #hero { padding: 0 4vw; }
+    
+    .hero-title { font-size: clamp(3rem, 8vw, 6rem); }
+    
+    .about-content {
+      padding: 4rem 3rem;
+      text-align: center;
+    }
+    
+    .about-content h2 { font-size: 2.2rem; }
+    
+    .about-overlay-text { display: none; }
   }
 </style>
 </head>
 <body>
 
 <!-- Custom cursor -->
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
 
-<!-- Background oil painting canvas -->
+<!-- Oil painting canvas background -->
 <canvas id="oilCanvas"></canvas>
 
 <!-- Navigation -->
@@ -793,396 +430,213 @@
   <ul class="nav-links">
     <li><a href="#about">O mně</a></li>
     <li><a href="#gallery">Galerie</a></li>
-    <li><a href="#booking">Rezervace</a></li>
+    <li><a href="#workshops">Workshopy</a></li>
+    <li><a href="#contact">Kontakt</a></li>
   </ul>
 </nav>
 
-<!-- HERO -->
+<!-- Hero section -->
 <section id="hero">
-  <div class="hero-eyebrow">Anna Labuťová — Tattoo Art</div>
-  <h1 class="hero-title">
-    Neum<em>implavat</em>
-  </h1>
-  <p class="hero-sub">Tetování jako olejomalba. Každý obraz na kůži je unikátní dílo inspirované Monetem, Van Goghem a impresionismem.</p>
-  <a href="#gallery" class="hero-cta">Vstupte do galerie</a>
-
+  <div class="hero-eyebrow">Umělecká tvorba</div>
+  <h1 class="hero-title">Neumím<br><em>plavat</em></h1>
+  <p class="hero-sub">
+    Ponořte se do světa malby, kde každý tah štětce vypráví příběh a každá barva má svou duši.
+  </p>
+  <a href="#about" class="hero-cta">Objevit více</a>
+  
   <div class="hero-scroll">
-    <span>Scroll</span>
+    <span>Scrolluj</span>
     <div class="scroll-line"></div>
   </div>
 </section>
 
-<div class="divider">· · ✦ · ·</div>
+<!-- Decorative divider -->
+<div class="divider">◦ ◦ ◦</div>
 
-<!-- ABOUT -->
+<!-- About section -->
 <section id="about">
   <div class="about-visual">
     <div class="about-canvas-mock">
       <canvas id="aboutCanvas"></canvas>
-      <div class="about-overlay-text">Anna</div>
     </div>
+    <div class="about-overlay-text">Malba</div>
   </div>
+  
   <div class="about-content">
-    <div class="section-label">Příběh</div>
-    <h2 class="reveal">Kde se rodí <em>umění</em> na kůži</h2>
-    <p class="reveal">Jsem Anna Labuťová a moje tetování nejsou jen tetování — jsou to malby. Každý design je inspirován impresionismem, světlem, pohybem a emocí.</p>
-    <p class="reveal">Pracuji s barvou jako Monet s vodou — vrstvím, rozplývám, nechávám plynout. Výsledkem je živé dílo, které nese příběh.</p>
-    <p class="reveal">Pseudonym Neumimplavat v sobě nese pravdu: nikdy jsem se nenaučila plavat, ale naučila jsem se ponořit do krásy tak hluboko, že na povrchu ani nezáleží.</p>
-    <div class="about-signature reveal">Anna Labuťová</div>
+    <div class="section-label">O umělci</div>
+    <h2>Anna <em>Labuťová</em></h2>
+    <p>
+      Vítejte ve světě, kde se štětec stává perem a barvy slovy. Jsem Anna Labuťová, 
+      a přestože neumím plavat, dokážu se potápět do hlubin barev a emocí.
+    </p>
+    <p>
+      Má tvorba je odrazem vnitřních světů, snů a pocitů, které se snaží najít 
+      svou cestu na plátno. Každý obraz je jedinečný příběh, který čeka na svého 
+      čtenáře.
+    </p>
+    <div class="about-signature">Anna</div>
   </div>
 </section>
-
-<!-- GALLERY -->
-<section id="gallery">
-  <div class="gallery-header reveal">
-    <div class="section-label">Portfolio</div>
-    <h2>Galerie <em>děl</em></h2>
-    <p>Každé tetování — jedinečný obraz. Každá kůže — nové plátno.</p>
-  </div>
-
-  <div class="gallery-grid">
-    <div class="gallery-item reveal">
-      <canvas class="gallery-canvas" data-style="monet" data-w="400" data-h="550"></canvas>
-      <div class="gallery-caption">
-        <h3>Lekníny v mlze</h3>
-        <span>Impresionismus · Aquarelle</span>
-      </div>
-    </div>
-    <div class="gallery-item reveal">
-      <canvas class="gallery-canvas" data-style="vangogh" data-w="300" data-h="300"></canvas>
-      <div class="gallery-caption">
-        <h3>Hvězdná noc</h3>
-        <span>Post-impresionismus</span>
-      </div>
-    </div>
-    <div class="gallery-item reveal">
-      <canvas class="gallery-canvas" data-style="floral" data-w="400" data-h="550"></canvas>
-      <div class="gallery-caption">
-        <h3>Jarní zahrada</h3>
-        <span>Oil painting style</span>
-      </div>
-    </div>
-    <div class="gallery-item reveal">
-      <canvas class="gallery-canvas" data-style="wave" data-w="300" data-h="300"></canvas>
-      <div class="gallery-caption">
-        <h3>Velká vlna</h3>
-        <span>Japonský impresionismus</span>
-      </div>
-    </div>
-    <div class="gallery-item reveal">
-      <canvas class="gallery-canvas" data-style="sunset" data-w="400" data-h="300"></canvas>
-      <div class="gallery-caption">
-        <h3>Západ slunce</h3>
-        <span>Expressionismus</span>
-      </div>
-    </div>
-    <div class="gallery-item reveal">
-      <canvas class="gallery-canvas" data-style="forest" data-w="400" data-h="300"></canvas>
-      <div class="gallery-caption">
-        <h3>Lesní šero</h3>
-        <span>Naturismus</span>
-      </div>
-    </div>
-    <div class="gallery-item reveal">
-      <canvas class="gallery-canvas" data-style="portrait" data-w="400" data-h="300"></canvas>
-      <div class="gallery-caption">
-        <h3>Portrét duše</h3>
-        <span>Figurativní impresionismus</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PHILOSOPHY -->
-<section id="philosophy">
-  <blockquote class="philosophy-quote reveal">
-    Kůže je jediné plátno, které dýchá, stárne a nese v sobě celý lidský příběh.
-  </blockquote>
-  <p class="philosophy-attr reveal">— Anna Labuťová</p>
-</section>
-
-<!-- BOOKING -->
-<section id="booking">
-  <div class="booking-info">
-    <div class="section-label">Rezervace</div>
-    <h2 class="reveal">Pojďme stvořit vaše <em>dílo</em></h2>
-    <p class="reveal">Každá konzultace začíná rozhovorem — o vás, o vašem příběhu, o tom, co chcete nést na kůži po zbytek života.</p>
-    <p class="reveal">Nepřijímám všechny projekty. Přijímám ty, které mě pohnou.</p>
-    <div class="booking-details reveal">
-      <div class="booking-detail-item">
-        <div class="detail-icon">✦</div>
-        <div class="detail-text">
-          <strong>Konzultace</strong>
-          <span>Bezplatná online konzultace před každou zakázkou</span>
-        </div>
-      </div>
-      <div class="booking-detail-item">
-        <div class="detail-icon">◈</div>
-        <div class="detail-text">
-          <strong>Čekací doba</strong>
-          <span>Aktuálně 6–10 týdnů</span>
-        </div>
-      </div>
-      <div class="booking-detail-item">
-        <div class="detail-icon">◇</div>
-        <div class="detail-text">
-          <strong>Instagram</strong>
-          <span>@neumimplavat</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="booking-form reveal">
-    <div class="form-title">Napište mi</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Jméno</label>
-        <input type="text" placeholder="Vaše jméno">
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" placeholder="vas@email.cz">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Styl tetování</label>
-      <select>
-        <option value="">Vyberte styl...</option>
-        <option>Impresionismus / Monet</option>
-        <option>Van Gogh / Post-impresionismus</option>
-        <option>Akvarel</option>
-        <option>Floral / Botanika</option>
-        <option>Portréty</option>
-        <option>Vlastní návrh</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Umístění na těle</label>
-      <input type="text" placeholder="Kde má být tetování...">
-    </div>
-    <div class="form-group">
-      <label>Váš příběh</label>
-      <textarea placeholder="Řekněte mi o svém nápadu, inspiraci, pocitu který chcete vyjádřit..."></textarea>
-    </div>
-    <button class="submit-btn"><span>Odeslat žádost → </span></button>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-brand">
-    Neumimplavat
-    <small>Anna Labuťová · Tattoo Artist</small>
-  </div>
-  <ul class="footer-links">
-    <li><a href="#about">Příběh</a></li>
-    <li><a href="#gallery">Galerie</a></li>
-    <li><a href="#booking">Kontakt</a></li>
-    <li><a href="#">Instagram</a></li>
-  </ul>
-  <div class="footer-copy">© 2025 Anna Labuťová — Neumimplavat · Všechna práva vyhrazena</div>
-</footer>
 
 <script>
-// ─── CUSTOM CURSOR ───
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animateCursor() {
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) * 0.12;
-  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(animateCursor);
-}
-animateCursor();
-document.querySelectorAll('a, button, .gallery-item').forEach(el => {
-  el.addEventListener('mouseenter', () => { ring.style.width = '60px'; ring.style.height = '60px'; ring.style.borderColor = 'rgba(212,168,75,0.8)'; });
-  el.addEventListener('mouseleave', () => { ring.style.width = '36px'; ring.style.height = '36px'; ring.style.borderColor = 'rgba(212,168,75,0.5)'; });
+// ─── CUSTOM CURSOR ─── 
+const cursor = document.querySelector('.cursor');
+const cursorRing = document.querySelector('.cursor-ring');
+
+document.addEventListener('mousemove', (e) => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  cursorRing.style.left = e.clientX + 'px';
+  cursorRing.style.top = e.clientY + 'px';
 });
 
-// ─── BACKGROUND OIL PAINTING CANVAS ───
-const bg = document.getElementById('oilCanvas');
-const bgCtx = bg.getContext('2d');
-function resizeBg() { bg.width = window.innerWidth; bg.height = window.innerHeight; }
-resizeBg(); window.addEventListener('resize', resizeBg);
-
-const blobs = Array.from({length: 18}, () => ({
-  x: Math.random() * window.innerWidth,
-  y: Math.random() * window.innerHeight,
-  r: 80 + Math.random() * 300,
-  vx: (Math.random() - 0.5) * 0.4,
-  vy: (Math.random() - 0.5) * 0.4,
-  hue: [200, 220, 260, 280, 320, 30, 170][Math.floor(Math.random() * 7)],
-  sat: 40 + Math.random() * 40,
-  lit: 20 + Math.random() * 30,
-}));
-
-function drawBg() {
-  bgCtx.clearRect(0, 0, bg.width, bg.height);
-  blobs.forEach(b => {
-    b.x += b.vx; b.y += b.vy;
-    if (b.x < -b.r) b.x = bg.width + b.r;
-    if (b.x > bg.width + b.r) b.x = -b.r;
-    if (b.y < -b.r) b.y = bg.height + b.r;
-    if (b.y > bg.height + b.r) b.y = -b.r;
-    const g = bgCtx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
-    g.addColorStop(0, `hsla(${b.hue},${b.sat}%,${b.lit}%,0.3)`);
-    g.addColorStop(1, 'transparent');
-    bgCtx.fillStyle = g;
-    bgCtx.beginPath();
-    bgCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-    bgCtx.fill();
-  });
-  requestAnimationFrame(drawBg);
-}
-drawBg();
-
-// ─── ABOUT CANVAS ───
-const ac = document.getElementById('aboutCanvas');
-const actx = ac.getContext('2d');
-function resizeAbout() { ac.width = ac.offsetWidth; ac.height = ac.offsetHeight; }
-resizeAbout();
-window.addEventListener('resize', resizeAbout);
-
-function drawAbout() {
-  const w = ac.width, h = ac.height;
-  actx.clearRect(0, 0, w, h);
-  // Deep teal background
-  const bg = actx.createLinearGradient(0, 0, w, h);
-  bg.addColorStop(0, '#0d2a35');
-  bg.addColorStop(1, '#1a4a5c');
-  actx.fillStyle = bg;
-  actx.fillRect(0, 0, w, h);
-  // Impressionist brush strokes
-  const strokes = [
-    {x: 0.2, y: 0.3, r: 180, h: 195, s: 60, l: 35},
-    {x: 0.7, y: 0.6, r: 150, h: 280, s: 50, l: 30},
-    {x: 0.5, y: 0.8, r: 200, h: 165, s: 55, l: 40},
-    {x: 0.8, y: 0.2, r: 120, h: 30, s: 65, l: 45},
-    {x: 0.3, y: 0.7, r: 160, h: 210, s: 45, l: 38},
-  ];
-  strokes.forEach(s => {
-    const g = actx.createRadialGradient(s.x * w, s.y * h, 0, s.x * w, s.y * h, s.r);
-    g.addColorStop(0, `hsla(${s.h},${s.s}%,${s.l}%,0.6)`);
-    g.addColorStop(1, 'transparent');
-    actx.fillStyle = g;
-    actx.beginPath();
-    actx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
-    actx.fill();
-  });
-}
-drawAbout();
-
-// ─── GALLERY CANVASES ───
-function paintGalleryCanvas(canvas, style) {
-  const w = canvas.width = canvas.offsetWidth;
-  const h = canvas.height = canvas.offsetHeight;
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, w, h);
-
-  const styles = {
-    monet: () => {
-      const bg = ctx.createLinearGradient(0,0,w,h);
-      bg.addColorStop(0, '#1a3a5c'); bg.addColorStop(0.5,'#2a5a6c'); bg.addColorStop(1,'#1a2a4c');
-      ctx.fillStyle = bg; ctx.fillRect(0,0,w,h);
-      [[0.2,0.3,120,'#5b8fa8',0.5],[0.7,0.5,150,'#7ab5c8',0.4],[0.5,0.8,100,'#a8d4e6',0.4],
-       [0.3,0.6,80,'#c9e8f0',0.3],[0.8,0.3,90,'#4a7a9c',0.5],[0.1,0.7,110,'#3a6a8c',0.4]].forEach(([x,y,r,c,a])=>{
-        const g = ctx.createRadialGradient(x*w,y*h,0,x*w,y*h,r);
-        g.addColorStop(0,c+Math.round(a*255).toString(16)); g.addColorStop(1,'transparent');
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x*w,y*h,r,0,Math.PI*2); ctx.fill();
-      });
-      for(let i=0;i<60;i++){ctx.strokeStyle=`hsla(${185+Math.random()*40},60%,${55+Math.random()*25}%,${0.3+Math.random()*0.3})`;
-      ctx.lineWidth=1+Math.random()*3;ctx.beginPath();const px=Math.random()*w,py=Math.random()*h;
-      ctx.moveTo(px,py);ctx.quadraticCurveTo(px+(-20+Math.random()*40),py+(-10+Math.random()*20),px+(-30+Math.random()*60),py+(-5+Math.random()*10));ctx.stroke();}
-    },
-    vangogh: () => {
-      ctx.fillStyle='#1a1a3a'; ctx.fillRect(0,0,w,h);
-      for(let i=0;i<80;i++){const x=Math.random()*w,y=Math.random()*h,r=20+Math.random()*80;
-      const g=ctx.createRadialGradient(x,y,0,x,y,r);
-      const hue=200+Math.random()*60;
-      g.addColorStop(0,`hsla(${hue},70%,45%,0.5)`);g.addColorStop(1,'transparent');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
-      for(let i=0;i<100;i++){ctx.save();ctx.translate(Math.random()*w,Math.random()*h);ctx.rotate(Math.random()*Math.PI*2);
-      ctx.strokeStyle=`hsla(${220+Math.random()*50},80%,${60+Math.random()*25}%,${0.4+Math.random()*0.4})`;
-      ctx.lineWidth=1.5+Math.random()*4;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(15+Math.random()*30,0);ctx.stroke();ctx.restore();}
-      for(let i=0;i<20;i++){const x=Math.random()*w,y=Math.random()*h;const g2=ctx.createRadialGradient(x,y,0,x,y,8+Math.random()*20);
-      g2.addColorStop(0,'rgba(255,240,180,0.8)');g2.addColorStop(1,'transparent');ctx.fillStyle=g2;ctx.beginPath();ctx.arc(x,y,15+Math.random()*20,0,Math.PI*2);ctx.fill();}
-    },
-    floral: () => {
-      const bg2=ctx.createLinearGradient(0,0,w,h);bg2.addColorStop(0,'#1a2a1a');bg2.addColorStop(1,'#2a3a1a');
-      ctx.fillStyle=bg2;ctx.fillRect(0,0,w,h);
-      const cols=['#e8806a','#d4a84b','#c9a8d4','#7ab5c8','#a8d488','#e8c4a0'];
-      for(let i=0;i<50;i++){const x=Math.random()*w,y=Math.random()*h,r=10+Math.random()*60,c=cols[Math.floor(Math.random()*cols.length)];
-      const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,c+'bb');g.addColorStop(1,'transparent');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();}
-      for(let i=0;i<30;i++){ctx.save();ctx.translate(Math.random()*w,Math.random()*h);ctx.rotate(Math.random()*Math.PI*2);
-      ctx.strokeStyle='rgba(160,200,120,0.4)';ctx.lineWidth=1+Math.random()*2;ctx.beginPath();
-      ctx.moveTo(0,0);ctx.bezierCurveTo(-10,-20,10,-40,0,-60);ctx.stroke();ctx.restore();}
-    },
-    wave: () => {
-      const bg3=ctx.createLinearGradient(0,0,0,h);bg3.addColorStop(0,'#0a1f3a');bg3.addColorStop(1,'#1a4a6c');
-      ctx.fillStyle=bg3;ctx.fillRect(0,0,w,h);
-      for(let i=0;i<8;i++){ctx.strokeStyle=`hsla(${200+i*5},60%,${40+i*5}%,${0.6-i*0.05})`;
-      ctx.lineWidth=4-i*0.3;ctx.beginPath();ctx.moveTo(0,h*0.3+i*h*0.06);
-      for(let x2=0;x2<=w;x2+=10){ctx.lineTo(x2,h*0.3+i*h*0.06+Math.sin(x2*0.05+i)*20-Math.sin(x2*0.02)*30);}ctx.stroke();}
-      ctx.fillStyle='rgba(200,230,255,0.15)';ctx.beginPath();ctx.moveTo(0,h*0.3);
-      for(let x3=0;x3<=w;x3+=10){ctx.lineTo(x3,h*0.3+Math.sin(x3*0.05)*20-Math.sin(x3*0.02)*30);}
-      ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fill();
-    },
-    sunset: () => {
-      const bg4=ctx.createLinearGradient(0,0,0,h);bg4.addColorStop(0,'#2a0a1a');bg4.addColorStop(0.4,'#8a2a0a');
-      bg4.addColorStop(0.7,'#e06030');bg4.addColorStop(1,'#f0a050');ctx.fillStyle=bg4;ctx.fillRect(0,0,w,h);
-      const sg=ctx.createRadialGradient(w*0.6,h*0.4,0,w*0.6,h*0.4,h*0.5);
-      sg.addColorStop(0,'rgba(255,220,100,0.9)');sg.addColorStop(0.3,'rgba(255,150,50,0.4)');sg.addColorStop(1,'transparent');
-      ctx.fillStyle=sg;ctx.fillRect(0,0,w,h);
-      for(let i=0;i<30;i++){ctx.strokeStyle=`hsla(${20+Math.random()*30},80%,${60+Math.random()*20}%,0.3)`;
-      ctx.lineWidth=1+Math.random()*3;ctx.beginPath();const px2=Math.random()*w;
-      ctx.moveTo(px2,Math.random()*h*0.5);ctx.lineTo(px2+(-20+Math.random()*40),Math.random()*h*0.5);ctx.stroke();}
-    },
-    forest: () => {
-      const bg5=ctx.createLinearGradient(0,0,0,h);bg5.addColorStop(0,'#0a1a0a');bg5.addColorStop(1,'#1a2a1a');
-      ctx.fillStyle=bg5;ctx.fillRect(0,0,w,h);
-      [[0.2,0.4,120,'#2a5a2a'],[0.7,0.3,150,'#3a6a3a'],[0.5,0.7,100,'#1a4a1a'],[0.1,0.6,80,'#4a7a4a']].forEach(([x,y,r,c])=>{
-      const g=ctx.createRadialGradient(x*w,y*h,0,x*w,y*h,r);g.addColorStop(0,c+'cc');g.addColorStop(1,'transparent');
-      ctx.fillStyle=g;ctx.beginPath();ctx.arc(x*w,y*h,r,0,Math.PI*2);ctx.fill();});
-      const lg=ctx.createLinearGradient(w*0.4,0,w*0.6,h);lg.addColorStop(0,'rgba(255,240,180,0.15)');lg.addColorStop(1,'transparent');
-      ctx.fillStyle=lg;ctx.fillRect(0,0,w,h);
-    },
-    portrait: () => {
-      const bg6=ctx.createLinearGradient(0,0,w,h);bg6.addColorStop(0,'#2a1a0a');bg6.addColorStop(1,'#3a2a1a');
-      ctx.fillStyle=bg6;ctx.fillRect(0,0,w,h);
-      const fg=ctx.createRadialGradient(w*0.5,h*0.4,0,w*0.5,h*0.4,h*0.45);
-      fg.addColorStop(0,'rgba(220,180,140,0.5)');fg.addColorStop(0.5,'rgba(180,130,90,0.3)');fg.addColorStop(1,'transparent');
-      ctx.fillStyle=fg;ctx.fillRect(0,0,w,h);
-      for(let i=0;i<40;i++){ctx.strokeStyle=`hsla(${25+Math.random()*30},50%,${45+Math.random()*20}%,0.4)`;
-      ctx.lineWidth=1+Math.random()*3;ctx.beginPath();const px=Math.random()*w,py=Math.random()*h;
-      ctx.moveTo(px,py);ctx.quadraticCurveTo(px+(-15+Math.random()*30),py+(-15+Math.random()*30),px+(-25+Math.random()*50),py+(-10+Math.random()*20));ctx.stroke();}
-    }
-  };
-  if(styles[style]) styles[style]();
-}
-
-// Paint all gallery canvases
-document.querySelectorAll('.gallery-canvas').forEach(c => {
-  const style = c.dataset.style;
-  const ro = new ResizeObserver(() => paintGalleryCanvas(c, style));
-  ro.observe(c);
-  setTimeout(() => paintGalleryCanvas(c, style), 100);
+document.addEventListener('mousedown', () => {
+  cursor.style.transform = 'translate(-50%, -50%) scale(0.8)';
+  cursorRing.style.transform = 'translate(-50%, -50%) scale(1.3)';
 });
 
-// ─── SCROLL REVEAL ───
-const observer = new IntersectionObserver(entries => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('visible'), i * 80);
+document.addEventListener('mouseup', () => {
+  cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+  cursorRing.style.transform = 'translate(-50%, -50%) scale(1)';
+});
+
+// Hover effects
+document.querySelectorAll('a, button').forEach(element => {
+  element.addEventListener('mouseenter', () => {
+    cursor.style.width = '24px';
+    cursor.style.height = '24px';
+    cursor.style.background = '#c9a8d4';
+    cursorRing.style.width = '60px';
+    cursorRing.style.height = '60px';
+  });
+  
+  element.addEventListener('mouseleave', () => {
+    cursor.style.width = '12px';
+    cursor.style.height = '12px';
+    cursor.style.background = '#d4a84b';
+    cursorRing.style.width = '36px';
+    cursorRing.style.height = '36px';
+  });
+});
+
+// ─── CANVAS ANIMATIONS ─── 
+// Background oil painting effect
+const canvas = document.getElementById('oilCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function paintBackground() {
+  const colors = ['#1a4a5c', '#c9a8d4', '#d4a84b', '#0d1b2a'];
+  
+  for(let i = 0; i < 50; i++) {
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const alpha = Math.random() * 0.1 + 0.02;
+    const size = Math.random() * 200 + 50;
+    
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = color;
+    
+    ctx.beginPath();
+    ctx.arc(
+      Math.random() * canvas.width,
+      Math.random() * canvas.height,
+      size,
+      0,
+      Math.PI * 2
+    );
+    ctx.fill();
+  }
+}
+
+// About section interactive canvas
+const aboutCanvas = document.getElementById('aboutCanvas');
+const aboutCtx = aboutCanvas.getContext('2d');
+
+function resizeAboutCanvas() {
+  aboutCanvas.width = aboutCanvas.offsetWidth;
+  aboutCanvas.height = aboutCanvas.offsetHeight;
+}
+
+function paintAboutCanvas() {
+  const colors = ['#1a4a5c', '#c9a8d4', '#e07a5f', '#7a9e8e'];
+  
+  // Create flowing abstract shapes
+  for(let i = 0; i < 20; i++) {
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const alpha = Math.random() * 0.3 + 0.1;
+    
+    aboutCtx.globalAlpha = alpha;
+    aboutCtx.fillStyle = color;
+    
+    aboutCtx.beginPath();
+    aboutCtx.moveTo(Math.random() * aboutCanvas.width, Math.random() * aboutCanvas.height);
+    
+    for(let j = 0; j < 5; j++) {
+      aboutCtx.quadraticCurveTo(
+        Math.random() * aboutCanvas.width,
+        Math.random() * aboutCanvas.height,
+        Math.random() * aboutCanvas.width,
+        Math.random() * aboutCanvas.height
+      );
+    }
+    
+    aboutCtx.fill();
+  }
+}
+
+// Animation loop
+function animate() {
+  // Subtle movement for background
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  paintBackground();
+  
+  requestAnimationFrame(animate);
+}
+
+// Initialize
+window.addEventListener('load', () => {
+  resizeCanvas();
+  resizeAboutCanvas();
+  paintAboutCanvas();
+  animate();
+});
+
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  resizeAboutCanvas();
+  paintAboutCanvas();
+});
+
+// ─── SMOOTH SCROLLING ─── 
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
     }
   });
-}, { threshold: 0.1 });
+});
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+// ─── PARALLAX & SCROLL EFFECTS ─── 
+window.addEventListener('scroll', () => {
+  const scrolled = window.pageYOffset;
+  const heroTitle = document.querySelector('.hero-title');
+  const heroSub = document.querySelector('.hero-sub');
+  
+  if (heroTitle) {
+    heroTitle.style.transform = `translateY(${scrolled * 0.3}px)`;
+  }
+  if (heroSub) {
+    heroSub.style.transform = `translateY(${scrolled * 0.2}px)`;
+  }
+});
+
 </script>
+
 </body>
 </html>
