@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="cs">
+<!-- Website created for Anna Labuťová - Neumimplavat -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -317,7 +318,7 @@
     font-family: 'IM Fell English', serif;
     font-size: 3rem;
     font-style: italic;
-    color: rgba(93,124,93,0.2);
+    color: rgba(253,253,248,0.2);
     line-height: 1;
     pointer-events: none;
   }
@@ -327,8 +328,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(253,253,248,0.9), rgba(199,232,199,0.3));
-    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, var(--paper-white), var(--warm-white));
   }
 
   .section-label {
@@ -362,7 +362,7 @@
     line-height: 1.7;
     color: var(--soft-gray);
     margin-bottom: 1.5rem;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   .about-signature {
@@ -374,7 +374,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    opacity: 0.8;
+    opacity: 0.9;
   }
 
   /* ─── ANIMATIONS ─── */
@@ -393,10 +393,22 @@
   }
 
   @keyframes aquarelFlow {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(20px, -10px) rotate(1deg); }
-    50% { transform: translate(-10px, 15px) rotate(-1deg); }
-    75% { transform: translate(15px, 5px) rotate(0.5deg); }
+    0%, 100% { 
+      background-position: 0% 0%, 100% 100%, 50% 50%, 0% 100%;
+      transform: rotate(0deg) scale(1);
+    }
+    25% { 
+      background-position: 25% 25%, 75% 25%, 75% 75%, 25% 75%;
+      transform: rotate(1deg) scale(1.02);
+    }
+    50% { 
+      background-position: 100% 100%, 0% 0%, 100% 0%, 100% 0%;
+      transform: rotate(0deg) scale(1);
+    }
+    75% { 
+      background-position: 75% 75%, 25% 75%, 25% 25%, 75% 25%;
+      transform: rotate(-1deg) scale(0.98);
+    }
   }
 
   /* ─── RESPONSIVE ─── */
@@ -492,10 +504,10 @@
     <div class="section-label">O malířce</div>
     <h2>Anna <em>Labuťová</em></h2>
     <p>
-      Jsem Anna Labuťová a věnuję se malbě. Přezdívku Neumimplavat mám od dětství, kdy jsem raději kreslila než šla do bazénu.
+      Jsem Anna Labuťová a věnuji se malbě. Přezdívku Neumimplavat mám od dětství, kdy jsem raději kreslila než šla do bazénu.
     </p>
     <p>
-      Maluji především aquarelem a akrylem. Ve své tvorbě se zaměřuję na portréty a krajiny. Ráda vedím workshopy a učím ostatní základy malby.
+      Maluji především aquarelem a akrylem. Ve své tvorbě se zaměřuji na portréty a krajiny. Ráda vedím workshopy a učím ostatní základy malby.
     </p>
     <div class="about-signature">Anna</div>
   </div>
@@ -531,6 +543,7 @@ document.querySelectorAll('a, button').forEach(element => {
     cursor.style.background = 'var(--emerald-shine)';
     cursorRing.style.width = '60px';
     cursorRing.style.height = '60px';
+    cursorRing.style.borderColor = 'var(--emerald-shine)';
   });
   
   element.addEventListener('mouseleave', () => {
@@ -539,11 +552,11 @@ document.querySelectorAll('a, button').forEach(element => {
     cursor.style.background = 'var(--sage-dark)';
     cursorRing.style.width = '36px';
     cursorRing.style.height = '36px';
+    cursorRing.style.borderColor = 'rgba(122,158,122,0.6)';
   });
 });
 
-// ─── CANVAS ANIMATIONS ─── 
-// Background watercolor effect
+// ─── WATERCOLOR BACKGROUND ─── 
 const canvas = document.getElementById('watercolorCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -552,42 +565,50 @@ function resizeCanvas() {
   canvas.height = window.innerHeight;
 }
 
-function createWatercolorBlob(x, y, size, color, alpha) {
+function createWatercolorBlob(x, y, size, alpha) {
   const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
-  gradient.addColorStop(0, color + alpha + ')');
-  gradient.addColorStop(0.7, color + (alpha * 0.3) + ')');
-  gradient.addColorStop(1, color + '0)');
+  gradient.addColorStop(0, `rgba(122, 158, 122, ${alpha})`);
+  gradient.addColorStop(0.4, `rgba(168, 196, 160, ${alpha * 0.8})`);
+  gradient.addColorStop(0.7, `rgba(199, 232, 199, ${alpha * 0.6})`);
+  gradient.addColorStop(1, 'transparent');
   
   ctx.fillStyle = gradient;
+  
+  // Create irregular blob shape
   ctx.beginPath();
-  ctx.arc(x, y, size, 0, Math.PI * 2);
+  const numPoints = 8;
+  for(let i = 0; i < numPoints; i++) {
+    const angle = (i / numPoints) * Math.PI * 2;
+    const variation = Math.random() * size * 0.3;
+    const currentSize = size + variation;
+    const currentX = x + Math.cos(angle) * currentSize;
+    const currentY = y + Math.sin(angle) * currentSize;
+    
+    if(i === 0) {
+      ctx.moveTo(currentX, currentY);
+    } else {
+      ctx.lineTo(currentX, currentY);
+    }
+  }
+  ctx.closePath();
   ctx.fill();
 }
 
 function paintWatercolorBackground() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  const greenShades = [
-    'rgba(168,196,160,', // sage-light
-    'rgba(122,158,122,', // sage-medium  
-    'rgba(199,232,199,', // mint
-    'rgba(143,188,143,', // metallic-green
-    'rgba(80,200,120,'   // emerald-shine
-  ];
-  
-  // Create flowing watercolor background
-  for(let i = 0; i < 30; i++) {
-    const color = greenShades[Math.floor(Math.random() * greenShades.length)];
-    const alpha = Math.random() * 0.15 + 0.05;
-    const size = Math.random() * 300 + 100;
+  // Create organic watercolor blobs
+  for(let i = 0; i < 20; i++) {
     const x = Math.random() * (canvas.width + 200) - 100;
     const y = Math.random() * (canvas.height + 200) - 100;
+    const size = Math.random() * 150 + 50;
+    const alpha = Math.random() * 0.3 + 0.1;
     
-    createWatercolorBlob(x, y, size, color, alpha);
+    createWatercolorBlob(x, y, size, alpha);
   }
 }
 
-// About section watercolor canvas
+// ─── ABOUT CANVAS ─── 
 const aboutCanvas = document.getElementById('aboutCanvas');
 const aboutCtx = aboutCanvas.getContext('2d');
 
@@ -597,95 +618,50 @@ function resizeAboutCanvas() {
 }
 
 function paintAboutCanvas() {
-  aboutCtx.clearRect(0, 0, aboutCanvas.width, aboutCanvas.height);
+  const width = aboutCanvas.width;
+  const height = aboutCanvas.height;
   
-  const colors = [
-    'rgba(168,196,160,',
-    'rgba(199,232,199,', 
-    'rgba(143,188,143,',
-    'rgba(80,200,120,'
-  ];
+  aboutCtx.clearRect(0, 0, width, height);
   
-  // Create organic watercolor shapes
+  // Create paint strokes
   for(let i = 0; i < 15; i++) {
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const alpha = Math.random() * 0.4 + 0.1;
-    
-    aboutCtx.globalAlpha = alpha;
-    
-    const centerX = Math.random() * aboutCanvas.width;
-    const centerY = Math.random() * aboutCanvas.height;
-    const radius = Math.random() * 150 + 50;
-    
-    // Create irregular watercolor blob
-    aboutCtx.beginPath();
-    for(let angle = 0; angle < Math.PI * 2; angle += 0.1) {
-      const variation = Math.random() * 30;
-      const x = centerX + Math.cos(angle) * (radius + variation);
-      const y = centerY + Math.sin(angle) * (radius + variation);
-      
-      if(angle === 0) {
-        aboutCtx.moveTo(x, y);
-      } else {
-        aboutCtx.lineTo(x, y);
-      }
-    }
-    aboutCtx.closePath();
-    
-    const gradient = aboutCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-    gradient.addColorStop(0, color + alpha + ')');
-    gradient.addColorStop(0.8, color + (alpha * 0.3) + ')');
-    gradient.addColorStop(1, color + '0)');
+    const gradient = aboutCtx.createLinearGradient(
+      Math.random() * width, Math.random() * height,
+      Math.random() * width, Math.random() * height
+    );
+    gradient.addColorStop(0, `rgba(122, 158, 122, ${Math.random() * 0.6 + 0.2})`);
+    gradient.addColorStop(0.5, `rgba(168, 196, 160, ${Math.random() * 0.4 + 0.3})`);
+    gradient.addColorStop(1, 'transparent');
     
     aboutCtx.fillStyle = gradient;
-    aboutCtx.fill();
+    aboutCtx.fillRect(
+      Math.random() * width * 0.8,
+      Math.random() * height * 0.8,
+      Math.random() * width * 0.4 + width * 0.2,
+      Math.random() * height * 0.2 + 20
+    );
   }
 }
 
-// Animation loop
-function animate() {
-  paintWatercolorBackground();
-  requestAnimationFrame(animate);
-}
-
-// Initialize
-window.addEventListener('load', () => {
-  resizeCanvas();
-  resizeAboutCanvas();
-  paintAboutCanvas();
-  animate();
-});
-
+// ─── INITIALIZATION ─── 
 window.addEventListener('resize', () => {
   resizeCanvas();
   resizeAboutCanvas();
+  paintWatercolorBackground();
   paintAboutCanvas();
 });
 
-// ─── SMOOTH SCROLLING ─── 
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  });
+document.addEventListener('DOMContentLoaded', () => {
+  resizeCanvas();
+  resizeAboutCanvas();
+  paintWatercolorBackground();
+  paintAboutCanvas();
 });
 
-// ─── PARALLAX & SCROLL EFFECTS ─── 
-window.addEventListener('scroll', () => {
-  const scrolled = window.pageYOffset;
-  const heroTitle = document.querySelector('.hero-title');
-  const heroSub = document.querySelector('.hero-sub');
-  
-  if (heroTitle) {
-    heroTitle.style.transform = `translateY(${scrolled * 0.3}px)`;
-  }
-  if (heroSub) {
-    heroSub.style.transform = `translateY(${scrolled * 0.2}px)`;
-  }
-});
+// Animate watercolor background
+setInterval(() => {
+  paintWatercolorBackground();
+}, 8000);
 
 </script>
 
