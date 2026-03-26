@@ -92,6 +92,70 @@
     color: var(--teal-green);
     font-style: italic;
     opacity: 0.8;
+    margin-bottom: 2rem;
+  }
+
+  /* PASSWORD ACCESS */
+  .password-access {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(32,79,75,0.2);
+  }
+
+  .password-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid rgba(32,79,75,0.3);
+    border-radius: 8px;
+    background: rgba(253,253,248,0.8);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: var(--deep-brown);
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+  }
+
+  .password-input:focus {
+    outline: none;
+    border-color: var(--rose-red);
+    background: rgba(253,253,248,1);
+  }
+
+  .password-input::placeholder {
+    color: var(--soft-gray);
+    opacity: 0.6;
+  }
+
+  .access-button {
+    width: 100%;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, var(--teal-green), var(--deep-brown));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .access-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
+
+  .error-message {
+    color: var(--rose-red);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .error-message.show {
+    opacity: 1;
   }
 
   .police-tape {
@@ -526,8 +590,14 @@
 </head>
 
 <body>
+  <script>
+    // MAINTENANCE MODE CONFIG - změň na false pro vypnutí údržby
+    const MAINTENANCE_MODE = true;
+    const ADMIN_PASSWORD = "umimplavat";
+  </script>
+
   <!-- MAINTENANCE LOCK SCREEN -->
-  <div class="maintenance-lock">
+  <div class="maintenance-lock" id="maintenanceLock">
     <div class="police-tape">
       ⚠️ POLICIE ⚠️ ZÁKAZ VSTUPU ⚠️ POLICIE ⚠️ ZÁKAZ VSTUPU ⚠️
     </div>
@@ -542,6 +612,21 @@
       <p class="maintenance-subtitle">
         Web se brzy vrátí v plné kráse
       </p>
+      
+      <div class="password-access">
+        <input 
+          type="password" 
+          class="password-input" 
+          id="passwordInput"
+          placeholder="Zadejte přístupové heslo..."
+        >
+        <button class="access-button" onclick="checkPassword()">
+          Vstoupit
+        </button>
+        <div class="error-message" id="errorMessage">
+          Nesprávné heslo!
+        </div>
+      </div>
     </div>
     
     <div class="police-tape police-tape-bottom">
@@ -615,6 +700,37 @@
   </section>
 
   <script>
+    // Maintenance mode logic
+    if (!MAINTENANCE_MODE) {
+      document.getElementById('maintenanceLock').style.display = 'none';
+    }
+
+    // Password check function
+    function checkPassword() {
+      const input = document.getElementById('passwordInput');
+      const errorMsg = document.getElementById('errorMessage');
+      
+      if (input.value === ADMIN_PASSWORD) {
+        document.getElementById('maintenanceLock').style.display = 'none';
+      } else {
+        errorMsg.classList.add('show');
+        input.value = '';
+        input.style.borderColor = 'var(--rose-red)';
+        
+        setTimeout(() => {
+          errorMsg.classList.remove('show');
+          input.style.borderColor = 'rgba(32,79,75,0.3)';
+        }, 3000);
+      }
+    }
+
+    // Enter key support for password
+    document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkPassword();
+      }
+    });
+
     // Custom cursor
     const cursor = document.querySelector('.cursor');
     const cursorRing = document.querySelector('.cursor-ring');
@@ -630,7 +746,7 @@
     });
 
     // Cursor hover effects
-    const interactiveElements = document.querySelectorAll('a, button, [role="button"]');
+    const interactiveElements = document.querySelectorAll('a, button, [role="button"], input');
     interactiveElements.forEach(el => {
       el.addEventListener('mouseenter', () => {
         cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
