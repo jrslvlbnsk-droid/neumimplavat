@@ -8,23 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --sage-light: #a8c4a0;
-    --sage-medium: #7a9e7a;
-    --sage-dark: #5d7c5d;
-    --metallic-green: #8fbc8f;
-    --mint: #c7e8c7;
-    --paper-white: #fdfdf8;
-    --warm-white: #f9f9f4;
-    --soft-gray: #6b7280;
-    --charcoal: #374151;
-    --emerald-shine: #50c878;
-    
-    /* New watercolor palette */
     --coral-pink: #F29A9E;
     --rose-red: #BF6061;
     --deep-brown: #572321;
     --dark-blue: #091F28;
     --teal-green: #204F4B;
+    --paper-white: #fdfdf8;
+    --soft-gray: #6b7280;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,11 +23,11 @@
 
   body {
     background: url('./background.jpg') center center / cover no-repeat fixed;
-    color: var(--charcoal);
+    color: var(--deep-brown);
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
-    cursor: none;
     position: relative;
+    min-height: 100vh;
   }
 
   /* MAINTENANCE LOCK SCREEN */
@@ -198,299 +188,6 @@
     100% { background-position: 40px 0; }
   }
 
-  /* Custom cursor */
-  .cursor {
-    width: 12px; height: 12px;
-    background: var(--deep-brown);
-    border-radius: 50%;
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%,-50%);
-    transition: transform 0.15s ease, width 0.3s, height 0.3s, background 0.3s;
-    mix-blend-mode: multiply;
-  }
-  .cursor-ring {
-    width: 36px; height: 36px;
-    border: 1px solid rgba(191,96,97,0.6);
-    border-radius: 50%;
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%,-50%);
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  /* ─── NAV ─── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2rem 4rem;
-    background: linear-gradient(to bottom, rgba(253,253,248,0.95), rgba(253,253,248,0.7));
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(242,154,158,0.2);
-  }
-
-  .nav-logo {
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.3em;
-    color: var(--deep-brown);
-    text-transform: uppercase;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 3rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 400;
-    color: var(--charcoal);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    opacity: 0.8;
-    transition: opacity 0.3s, color 0.3s;
-    position: relative;
-  }
-
-  .nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px; left: 0;
-    width: 0; height: 2px;
-    background: linear-gradient(90deg, var(--rose-red), var(--coral-pink));
-    transition: width 0.4s ease;
-  }
-  .nav-links a:hover { opacity: 1; color: var(--deep-brown); }
-  .nav-links a:hover::after { width: 100%; }
-
-  /* ─── HERO ─── */
-  #hero {
-    position: relative;
-    z-index: 2;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 0 8vw;
-    overflow: hidden;
-  }
-
-  .hero-eyebrow {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.5em;
-    color: var(--teal-green);
-    text-transform: uppercase;
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: fadeUp 1.2s 0.3s ease forwards;
-  }
-
-  .hero-title {
-    font-family: 'IM Fell English', serif;
-    font-size: clamp(3.5rem, 9vw, 8rem);
-    line-height: 0.9;
-    color: var(--charcoal);
-    font-weight: 400;
-    opacity: 0;
-    animation: fadeUp 1.4s 0.5s ease forwards;
-    position: relative;
-    text-shadow: 2px 2px 20px rgba(242,154,158,0.3);
-  }
-
-  .hero-title em {
-    font-style: italic;
-    color: var(--rose-red);
-    display: block;
-    background: linear-gradient(135deg, var(--rose-red), var(--coral-pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-sub {
-    margin-top: 2.5rem;
-    font-size: 1.1rem;
-    font-weight: 400;
-    color: var(--soft-gray);
-    letter-spacing: 0.05em;
-    max-width: 420px;
-    line-height: 1.6;
-    opacity: 0;
-    animation: fadeUp 1.4s 0.8s ease forwards;
-  }
-
-  .hero-cta {
-    margin-top: 3.5rem;
-    display: inline-block;
-    padding: 1.1rem 2.8rem;
-    border: 2px solid var(--rose-red);
-    color: var(--deep-brown);
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s;
-    opacity: 0;
-    animation: fadeUp 1.4s 1.1s ease forwards;
-    background: rgba(242,154,158,0.2);
-    backdrop-filter: blur(5px);
-  }
-
-  .hero-cta::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, var(--rose-red), var(--coral-pink));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s ease;
-    z-index: -1;
-  }
-
-  .hero-cta:hover { color: var(--paper-white); }
-  .hero-cta:hover::before { transform: scaleX(1); }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 3rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.8rem;
-    opacity: 0;
-    animation: fadeIn 2s 1.5s ease forwards;
-  }
-
-  .hero-scroll span {
-    font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.4em;
-    color: var(--teal-green);
-    text-transform: uppercase;
-    opacity: 0.8;
-  }
-
-  .scroll-line {
-    width: 2px;
-    height: 60px;
-    background: linear-gradient(to bottom, var(--teal-green), var(--coral-pink));
-    animation: scrollPulse 2s infinite;
-    border-radius: 1px;
-  }
-
-  /* ─── DIVIDER ─── */
-  .divider {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 1rem 0;
-    color: var(--teal-green);
-    font-size: 1.5rem;
-    letter-spacing: 1rem;
-    opacity: 0.6;
-  }
-
-  /* ─── ABOUT ─── */
-  #about {
-    position: relative;
-    z-index: 2;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    min-height: 80vh;
-  }
-
-  .about-visual {
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, rgba(242,154,158,0.3), rgba(32,79,75,0.2));
-  }
-
-  .about-canvas-mock {
-    width: 100%;
-    height: 100%;
-    min-height: 500px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  #aboutCanvas {
-    width: 100%; height: 100%;
-    position: absolute;
-    inset: 0;
-  }
-
-  .about-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(45deg, 
-      rgba(242,154,158,0.15), 
-      rgba(191,96,97,0.1), 
-      rgba(32,79,75,0.12)
-    );
-    mix-blend-mode: multiply;
-  }
-
-  .about-content {
-    padding: 8rem 6rem 4rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background: rgba(253,253,248,0.95);
-    backdrop-filter: blur(10px);
-  }
-
-  .about-title {
-    font-family: 'Cinzel', serif;
-    font-size: 2.5rem;
-    color: var(--deep-brown);
-    margin-bottom: 2rem;
-    line-height: 1.2;
-  }
-
-  .about-text {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--soft-gray);
-    margin-bottom: 2rem;
-  }
-
-  /* ─── ANIMATIONS ─── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.6; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(1.1); }
-  }
-
   /* ─── RESPONSIVE ─── */
   @media (max-width: 768px) {
     .maintenance-content {
@@ -509,16 +206,6 @@
       font-size: 0.6rem;
       height: 40px;
     }
-    
-    nav { padding: 1.5rem 2rem; }
-    .nav-links { gap: 1.5rem; }
-    
-    #hero { padding: 0 4vw; text-align: left; }
-    .hero-title { font-size: clamp(2.5rem, 8vw, 4rem); }
-    
-    #about { grid-template-columns: 1fr; }
-    .about-content { padding: 4rem 3rem; }
-    .about-title { font-size: 2rem; }
   }
 </style>
 </head>
@@ -568,68 +255,6 @@
     </div>
   </div>
 
-  <!-- Custom cursors -->
-  <div class="cursor"></div>
-  <div class="cursor-ring"></div>
-
-  <!-- Navigation -->
-  <nav>
-    <a href="#" class="nav-logo">Neumimplavat</a>
-    <ul class="nav-links">
-      <li><a href="#about">O mně</a></li>
-      <li><a href="#kurzy">Kurzy</a></li>
-      <li><a href="#galerie">Galerie</a></li>
-      <li><a href="#kontakt">Kontakt</a></li>
-    </ul>
-  </nav>
-
-  <!-- Hero Section -->
-  <section id="hero">
-    <div class="hero-eyebrow">Kurzy plavání</div>
-    <h1 class="hero-title">
-      Neumím<br>
-      <em>plavat</em>
-    </h1>
-    <p class="hero-sub">
-      Už vás unavuje bázeň z vody? Naučte se plavat s trpělivým 
-      přístupem a individuální péčí. Anna vás provede každým krokem 
-      k sebejistému pohybu ve vodě.
-    </p>
-    <a href="#kurzy" class="hero-cta">Začít kurz</a>
-    
-    <div class="hero-scroll">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <!-- Divider -->
-  <div class="divider">◊ ◊ ◊</div>
-
-  <!-- About Section -->
-  <section id="about">
-    <div class="about-visual">
-      <div class="about-canvas-mock">
-        <canvas id="aboutCanvas"></canvas>
-        <div class="about-overlay"></div>
-      </div>
-    </div>
-    
-    <div class="about-content">
-      <h2 class="about-title">O Anně Labuťové</h2>
-      <p class="about-text">
-        Jsem certifikovaná plavecká instruktorka s dlouholetými zkušenostmi 
-        v práci s dospělými, kteří se chtějí naučit plavat. Specializuji se 
-        na individuální přístup a překonávání strachu z vody.
-      </p>
-      <p class="about-text">
-        Věřím, že každý může zvládnout plavání ve svém tempu. Moje kurzy 
-        jsou postaveny na trpělivosti, pochopení a postupném budování 
-        sebedůvěry ve vodě.
-      </p>
-    </div>
-  </section>
-
   <script>
     // Maintenance mode logic
     if (!MAINTENANCE_MODE) {
@@ -660,34 +285,6 @@
       if (e.key === 'Enter') {
         checkPassword();
       }
-    });
-
-    // Custom cursor
-    const cursor = document.querySelector('.cursor');
-    const cursorRing = document.querySelector('.cursor-ring');
-    
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-      
-      setTimeout(() => {
-        cursorRing.style.left = e.clientX + 'px';
-        cursorRing.style.top = e.clientY + 'px';
-      }, 80);
-    });
-
-    // Cursor hover effects
-    const interactiveElements = document.querySelectorAll('a, button, [role="button"], input');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
-        cursorRing.style.transform = 'translate(-50%, -50%) scale(1.8)';
-      });
-      
-      el.addEventListener('mouseleave', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-        cursorRing.style.transform = 'translate(-50%, -50%) scale(1)';
-      });
     });
   </script>
 </body>
