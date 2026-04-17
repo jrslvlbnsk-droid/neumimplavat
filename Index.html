@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neumimplavat – Kompletní editor</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --teal:#4a8b8b;--rose:#c9a9a6;--accent:#e8b4b8;
+  --panel:#1e1e1e;--panel2:#272727;--panel3:#2f2f2f;
+  --border:#363636;--text:#dedede;--muted:#777;
+  --green:#27ae60;--red:#e74c3c;
+}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:#141414;color:var(--text);display:flex;flex-direction:column;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--panel);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;gap:10px;height:48px;flex-shrink:0;z-index:50;}
+.logo{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--accent);white-space:nowrap;margin-right:6px;}
+.tabs{display:flex;gap:2px;overflow-x:auto;flex:1;}
+.tabs::-webkit-scrollbar{height:0;}
+.tab{padding:5px 12px;border-radius:5px;border:none;background:transparent;color:var(--muted);font-size:.73rem;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.tab.on{background:var(--teal);color:#fff;}
+.tab:hover:not(.on){background:#333;color:#ddd;}
+.gh-pill{font-size:.7rem;padding:4px 11px;border-radius:20px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;cursor:default;}
+.gh-pill.ok{border-color:var(--green);color:var(--green);}
+.gh-pill.err{border-color:var(--red);color:var(--red);}
+.pub-btn{padding:5px 14px;border-radius:6px;border:none;background:var(--green);color:#fff;font-size:.73rem;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:background .2s;}
+.pub-btn:hover{background:#219150;}
+
+/* ── LAYOUT ── */
+.workspace{display:flex;flex:1;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:290px;min-width:260px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+.sidebar-body{flex:1;overflow-y:auto;}
+.sidebar-body::-webkit-scrollbar{width:4px;} .sidebar-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px;}
+.pane{display:none;} .pane.on{display:block;}
+
+/* SECTIONS */
+.sec{padding:13px 14px;border-bottom:1px solid var(--border);}
+.sec:last-child{border-bottom:none;}
+.sec-hd{font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:10px;}
+
+/* FIELDS */
+.f{margin-bottom:8px;}
+.f>label{display:block;font-size:.72rem;color:#bbb;margin-bottom:3px;}
+.f input[type=text],.f input[type=password],.f input[type=url],.f input[type=email],
+.f textarea,.f select{
+  width:100%;background:#161616;color:#ddd;border:1px solid var(--border);
+  border-radius:5px;padding:6px 9px;font-size:.77rem;font-family:'DM Sans',sans-serif;
+  transition:border .15s;
+}
+.f input:focus,.f textarea:focus,.f select:focus{outline:none;border-color:var(--teal);}
+.f textarea{resize:vertical;min-height:52px;line-height:1.5;}
+.f input[type=color]{width:36px;height:28px;border:none;border-radius:4px;cursor:pointer;padding:0;background:none;}
+.crow{display:flex;align-items:center;gap:6px;}
+.crow input[type=text]{flex:1;}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.slrow{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+.slrow label{font-size:.71rem;color:#bbb;min-width:76px;}
+.slrow .val{font-size:.7rem;color:var(--muted);min-width:34px;text-align:right;}
+input[type=range]{flex:1;accent-color:var(--teal);}
+
+/* BUTTONS */
+.btn{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .18s;white-space:nowrap;}
+.btn-sm{padding:4px 10px;font-size:.7rem;}
+.btn-teal{background:var(--teal);color:#fff;}.btn-teal:hover{background:#3c7878;}
+.btn-ghost{background:transparent;color:#999;border:1px solid var(--border);}.btn-ghost:hover{background:#333;color:#ddd;}
+.btn-red{background:var(--red);color:#fff;}.btn-red:hover{background:#c0392b;}
+.btn-green{background:var(--green);color:#fff;}.btn-green:hover{background:#219150;}
+.btn-rose{background:var(--rose);color:#1a1a1a;}.btn-rose:hover{background:#b89693;}
+.btn-full{width:100%;margin-top:5px;}
+.brow{display:flex;gap:5px;margin-top:5px;}
+
+/* ITEMS */
+.ilist{display:flex;flex-direction:column;gap:4px;margin-bottom:7px;}
+.irow{display:flex;align-items:center;gap:5px;background:#161616;border-radius:5px;padding:5px 8px;border:1px solid var(--border);}
+.irow .il{flex:1;font-size:.74rem;color:#ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.xbtn{background:none;border:none;cursor:pointer;font-size:.8rem;padding:2px 4px;border-radius:3px;color:#666;transition:all .15s;}
+.xbtn:hover{background:#333;color:#f66;}
+
+/* UPLOAD */
+.upz{border:2px dashed #3a3a3a;border-radius:7px;padding:12px 8px;text-align:center;cursor:pointer;position:relative;overflow:hidden;background:#181818;margin-bottom:6px;transition:all .2s;}
+.upz:hover{border-color:var(--teal);background:#1b2b2b;}
+.upz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upz .ui{font-size:1.2rem;margin-bottom:3px;}
+.upz .ul{font-size:.72rem;color:#777;line-height:1.4;}
+.upz .ul strong{color:var(--accent);}
+.thumb{border-radius:5px;overflow:hidden;position:relative;background:#181818;min-height:44px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.thumb img{width:100%;max-height:80px;object-fit:cover;display:block;}
+.thumb .clr{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:3px;padding:1px 5px;font-size:.65rem;cursor:pointer;}
+.noimg{font-size:.68rem;color:#555;}
+
+/* RICH TEXT TOOLBAR */
+.rte-toolbar{display:flex;flex-wrap:wrap;gap:3px;padding:6px;background:#161616;border:1px solid var(--border);border-bottom:none;border-radius:5px 5px 0 0;}
+.rte-btn{padding:3px 7px;border-radius:3px;border:1px solid #3a3a3a;background:#222;color:#ccc;font-size:.72rem;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.rte-btn:hover{background:#3a3a3a;color:#fff;}
+.rte-btn.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.rte-area{width:100%;min-height:120px;background:#161616;color:#ddd;border:1px solid var(--border);border-radius:0 0 5px 5px;padding:8px 10px;font-size:.82rem;font-family:'DM Sans',sans-serif;line-height:1.7;outline:none;}
+.rte-area:focus{border-color:var(--teal);}
+
+/* LOG */
+.logbox{background:#111;border:1px solid var(--border);border-radius:5px;padding:10px;font-family:'Courier New',monospace;font-size:.69rem;max-height:130px;overflow-y:auto;line-height:1.9;}
+.logbox::-webkit-scrollbar{width:3px;} .logbox::-webkit-scrollbar-thumb{background:#444;}
+.lok{color:var(--green);} .lerr{color:var(--red);} .linf{color:#666;}
+
+/* ── PREVIEW PANE ── */
+.preview{flex:1;overflow:auto;background:#131313;padding:20px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.preview::-webkit-scrollbar{width:5px;} .preview::-webkit-scrollbar-thumb{background:#3a3a3a;}
+.plabel{font-size:.65rem;color:#444;text-transform:uppercase;letter-spacing:.1em;align-self:flex-start;}
+
+.pcard{width:100%;max-width:900px;background:#f5f0eb;border-radius:10px;overflow:hidden;box-shadow:0 6px 32px rgba(0,0,0,.55);}
+.pcard-hd{background:#232323;padding:7px 13px;display:flex;align-items:center;justify-content:space-between;}
+.pcard-title{font-size:.68rem;color:#555;letter-spacing:.05em;}
+
+/* ── SITE SHELL ── */
+.sh{border-radius:0;overflow:hidden;}
+.sh-header{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.sh-header-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
+.sh-header-ov{position:absolute;inset:0;}
+.sh-header-ct{position:relative;z-index:2;text-align:center;padding:20px;}
+.sh-nav{display:flex;flex-wrap:wrap;}
+.sh-nav a{text-decoration:none;transition:color .2s;}
+.sh-body{position:relative;}
+.sh-body-bg{position:absolute;inset:0;background-size:cover;pointer-events:none;}
+.sh-body-ct{position:relative;z-index:1;padding:28px 32px;max-width:860px;margin:0 auto;}
+.sh-section{margin-bottom:28px;}
+.sh-footer{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.sh-footer-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
+.sh-footer-ov{position:absolute;inset:0;}
+.sh-footer-ct{position:relative;z-index:2;text-align:center;padding:16px;}
+
+/* toast */
+.toast{position:fixed;bottom:16px;right:16px;padding:8px 16px;border-radius:7px;font-size:.77rem;z-index:999;opacity:0;transform:translateY(6px);transition:all .22s;pointer-events:none;color:#fff;}
+.toast.show{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">🖋 Neumimplavat</div>
+  <div class="tabs">
+    <button class="tab on"  onclick="st('github')">⚙️ GitHub</button>
+    <button class="tab"     onclick="st('texty')">✏️ Texty</button>
+    <button class="tab"     onclick="st('design')">🎨 Design</button>
+    <button class="tab"     onclick="st('images')">🖼 Obrázky</button>
+    <button class="tab"     onclick="st('nav')">🧭 Menu</button>
+    <button class="tab"     onclick="st('buttons')">🔘 Tlačítka</button>
+    <button class="tab"     onclick="st('cards')">🃏 Karty</button>
+    <button class="tab"     onclick="st('gallery')">📷 Galerie</button>
+    <button class="tab"     onclick="st('form')">✉️ Formulář</button>
+    <button class="tab"     onclick="st('seo')">🔍 SEO</button>
+  </div>
+  <div class="gh-pill" id="ghpill">⚪ Nepřipojen</div>
+  <button class="pub-btn" onclick="publish()">🚀 Uložit na GitHub</button>
+</div>
+
+<div class="workspace">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<div class="sidebar-body">
+
+<!-- ── GITHUB ── -->
+<div class="pane on" id="pane-github">
+  <div class="sec">
+    <div class="sec-hd">Připojení k GitHubu</div>
+    <div class="f"><label>Token (ghp_...)</label><input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" oninput="ghSave()"></div>
+    <div class="f"><label>GitHub uživatel</label><input type="text" id="gh-user" value="jrslvlbnsk-droid" oninput="ghSave()"></div>
+    <div class="f"><label>Repozitář</label><input type="text" id="gh-repo" value="neumimplavat" oninput="ghSave()"></div>
+    <div class="f"><label>Větev</label><input type="text" id="gh-branch" value="main" oninput="ghSave()"></div>
+    <button class="btn btn-teal btn-full" onclick="ghTest()">🔗 Otestovat připojení</button>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Jak získat token</div>
+    <div style="font-size:.72rem;color:#777;line-height:1.8;">
+      1. GitHub → profilový obrázek → <b style="color:#bbb">Settings</b><br>
+      2. Dolů → <b style="color:#bbb">Developer settings</b><br>
+      3. <b style="color:#bbb">Personal access tokens → Tokens (classic)</b><br>
+      4. <b style="color:#bbb">Generate new token (classic)</b><br>
+      5. Zaškrtni <b style="color:var(--accent)">repo</b> → Generate<br>
+      6. Token zkopíruj sem ↑ (zobrazí se jen jednou!)
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Log připojení</div>
+    <div class="logbox" id="gh-log"><span class="linf">Zadej token a otestuj...</span></div>
+  </div>
+</div>
+
+<!-- ── TEXTY ── -->
+<div class="pane" id="pane-texty">
+  <div class="sec">
+    <div class="sec-hd">Název webu (záhlaví)</div>
+    <div class="f"><label>Hlavní nadpis (H1)</label><input type="text" id="txt-h1" value="Neumím plavat" oninput="rp()"></div>
+    <div class="f"><label>Podnadpis záhlaví</label><input type="text" id="txt-sub" value="Tetování s duší · Praha" oninput="rp()"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Sekce – Uvod</div>
+    <div class="f"><label>Nadpis sekce</label><input type="text" id="txt-s1h" value="Vítejte v mém ateliéru" oninput="rp()"></div>
+    <div class="f"><label>Text (podporuje HTML)</label>
+      <div class="rte-toolbar" id="rte1-bar">
+        <button class="rte-btn" onclick="rte('rte1','bold')"><b>B</b></button>
+        <button class="rte-btn" onclick="rte('rte1','italic')"><i>I</i></button>
+        <button class="rte-btn" onclick="rte('rte1','underline')"><u>U</u></button>
+        <button class="rte-btn" onclick="rteLink('rte1')">🔗</button>
+        <button class="rte-btn" onclick="rte('rte1','insertUnorderedList')">• list</button>
+        <button class="rte-btn" onclick="rte('rte1','removeFormat')">✖ reset</button>
+      </div>
+      <div class="rte-area" id="rte1" contenteditable="true" oninput="rp()">Každé tetování je originální umělecké dílo navržené přímo pro vás. Specializuji se na <strong>jemné linky</strong>, botanické motivy a miniaturní ilustrace.</div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Sekce – O mně</div>
+    <div class="f"><label>Nadpis sekce</label><input type="text" id="txt-s2h" value="O mně" oninput="rp()"></div>
+    <div class="f"><label>Text</label>
+      <div class="rte-toolbar">
+        <button class="rte-btn" onclick="rte('rte2','bold')"><b>B</b></button>
+        <button class="rte-btn" onclick="rte('rte2','italic')"><i>I</i></button>
+        <button class="rte-btn" onclick="rte('rte2','underline')"><u>U</u></button>
+        <button class="rte-btn" onclick="rteLink('rte2')">🔗</button>
+        <button class="rte-btn" onclick="rte('rte2','insertUnorderedList')">• list</button>
+        <button class="rte-btn" onclick="rte('rte2','removeFormat')">✖ reset</button>
+      </div>
+      <div class="rte-area" id="rte2" contenteditable="true" oninput="rp()">Jsem tattoo artistka se sídlem v Praze. Objednávky přijímám přes Instagram nebo email. Každý klient dostane individuální přístup a návrh na míru.</div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Zápatí – text</div>
+    <div class="f"><label>Text zápatí</label><input type="text" id="txt-footer" value="© 2024 · Všechna práva vyhrazena · Praha" oninput="rp()"></div>
+    <div class="f"><label>Instagram odkaz</label><input type="text" id="txt-ig" placeholder="https://instagram.com/..." oninput="rp()"></div>
+    <div class="f"><label>Email</label><input type="text" id="txt-email" placeholder="vas@email.cz" oninput="rp()"></div>
+  </div>
+</div>
+
+<!-- ── DESIGN ── -->
+<div class="pane" id="pane-design">
+  <div class="sec">
+    <div class="sec-hd">Barvy webu</div>
+    <div class="f"><label>Barva pozadí stránky</label><div class="crow"><input type="color" id="d-bg" value="#f5f0eb" oninput="rp()"><input type="text" id="d-bg-t" value="#f5f0eb" oninput="sc('d-bg','d-bg-t');rp()"></div></div>
+    <div class="f"><label>Barva hlavního textu</label><div class="crow"><input type="color" id="d-text" value="#1a1a1a" oninput="rp()"><input type="text" id="d-text-t" value="#1a1a1a" oninput="sc('d-text','d-text-t');rp()"></div></div>
+    <div class="f"><label>Barva nadpisů</label><div class="crow"><input type="color" id="d-head" value="#1a1a1a" oninput="rp()"><input type="text" id="d-head-t" value="#1a1a1a" oninput="sc('d-head','d-head-t');rp()"></div></div>
+    <div class="f"><label>Zvýrazňovací barva</label><div class="crow"><input type="color" id="d-accent" value="#4a8b8b" oninput="rp()"><input type="text" id="d-accent-t" value="#4a8b8b" oninput="sc('d-accent','d-accent-t');rp()"></div></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Písmo</div>
+    <div class="f"><label>Nadpisy (font)</label>
+      <select id="d-font-head" onchange="rp()">
+        <option value="'Playfair Display', serif" selected>Playfair Display (serif)</option>
+        <option value="'Georgia', serif">Georgia</option>
+        <option value="'DM Sans', sans-serif">DM Sans</option>
+        <option value="'Arial', sans-serif">Arial</option>
+        <option value="'Courier New', monospace">Courier New</option>
+      </select>
+    </div>
+    <div class="f"><label>Tělo textu (font)</label>
+      <select id="d-font-body" onchange="rp()">
+        <option value="'DM Sans', sans-serif" selected>DM Sans</option>
+        <option value="'Georgia', serif">Georgia</option>
+        <option value="'Arial', sans-serif">Arial</option>
+        <option value="'Verdana', sans-serif">Verdana</option>
+      </select>
+    </div>
+    <div class="slrow"><label>Velikost textu</label><input type="range" id="d-font-size" min="13" max="22" value="16" oninput="v('d-font-size-v',this.value+'px');rp()"><span class="val" id="d-font-size-v">16px</span></div>
+    <div class="slrow"><label>Výška řádku</label><input type="range" id="d-lh" min="14" max="22" value="18" oninput="v('d-lh-v','1.'+this.value.slice(-1));rp()"><span class="val" id="d-lh-v">1.8</span></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Rozložení</div>
+    <div class="slrow"><label>Max šířka obsahu</label><input type="range" id="d-maxw" min="600" max="1200" value="900" step="50" oninput="v('d-maxw-v',this.value+'px');rp()"><span class="val" id="d-maxw-v">900px</span></div>
+    <div class="slrow"><label>Vnitřní okraje</label><input type="range" id="d-pad" min="12" max="60" value="32" oninput="v('d-pad-v',this.value+'px');rp()"><span class="val" id="d-pad-v">32px</span></div>
+  </div>
+</div>
+
+<!-- ── IMAGES ── -->
+<div class="pane" id="pane-images">
+  <div class="sec">
+    <div class="sec-hd">📸 Záhlaví</div>
+    <div class="upz" onclick="tu('header')"><input type="file" id="inp-header" accept="image/*" onchange="li(event,'header')"><div class="ui">🖼</div><div class="ul">Klikni – <strong>obrázek záhlaví</strong></div></div>
+    <div class="thumb" id="th-header"><span class="noimg">Žádný obrázek</span></div>
+    <div class="slrow"><label>Výška</label><input type="range" id="i-hh" min="100" max="550" value="240" oninput="v('i-hh-v',this.value+'px');rp()"><span class="val" id="i-hh-v">240px</span></div>
+    <div class="slrow"><label>Ztmavení</label><input type="range" id="i-ho" min="0" max="90" value="40" oninput="v('i-ho-v',this.value+'%');rp()"><span class="val" id="i-ho-v">40%</span></div>
+    <div class="f"><label>Pozice obrázku</label><select id="i-hpos" onchange="rp()"><option value="center">Střed</option><option value="top">Nahoře</option><option value="bottom">Dole</option></select></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">🌿 Pozadí stránky</div>
+    <div class="upz" onclick="tu('bg')"><input type="file" id="inp-bg" accept="image/*" onchange="li(event,'bg')"><div class="ui">🖼</div><div class="ul">Klikni – <strong>pozadí</strong></div></div>
+    <div class="thumb" id="th-bg"><span class="noimg">Žádný obrázek</span></div>
+    <div class="slrow"><label>Průhlednost</label><input type="range" id="i-bgop" min="0" max="100" value="12" oninput="v('i-bgop-v',this.value+'%');rp()"><span class="val" id="i-bgop-v">12%</span></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">🎨 Střed stránky</div>
+    <div class="upz" onclick="tu('center')"><input type="file" id="inp-center" accept="image/*" onchange="li(event,'center')"><div class="ui">🖼</div><div class="ul">Klikni – <strong>střed</strong></div></div>
+    <div class="thumb" id="th-center"><span class="noimg">Žádný obrázek</span></div>
+    <div class="slrow"><label>Max výška</label><input type="range" id="i-ch" min="80" max="600" value="280" oninput="v('i-ch-v',this.value+'px');rp()"><span class="val" id="i-ch-v">280px</span></div>
+    <div class="slrow"><label>Zaoblení</label><input type="range" id="i-cr" min="0" max="40" value="8" oninput="v('i-cr-v',this.value+'px');rp()"><span class="val" id="i-cr-v">8px</span></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">🦶 Zápatí</div>
+    <div class="upz" onclick="tu('footer')"><input type="file" id="inp-footer" accept="image/*" onchange="li(event,'footer')"><div class="ui">🖼</div><div class="ul">Klikni – <strong>zápatí</strong></div></div>
+    <div class="thumb" id="th-footer"><span class="noimg">Žádný obrázek</span></div>
+    <div class="slrow"><label>Výška</label><input type="range" id="i-fh" min="60" max="320" value="110" oninput="v('i-fh-v',this.value+'px');rp()"><span class="val" id="i-fh-v">110px</span></div>
+    <div class="slrow"><label>Ztmavení</label><input type="range" id="i-fo" min="0" max="90" value="55" oninput="v('i-fo-v',this.value+'%');rp()"><span class="val" id="i-fo-v">55%</span></div>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<div class="pane" id="pane-nav">
+  <div class="sec">
+    <div class="sec-hd">Styl navigace</div>
+    <div class="f"><label>Barva pozadí</label><div class="crow"><input type="color" id="n-bg" value="#1a1a1a" oninput="rp()"><input type="text" id="n-bg-t" value="#1a1a1a" oninput="sc('n-bg','n-bg-t');rp()"></div></div>
+    <div class="f"><label>Barva textu</label><div class="crow"><input type="color" id="n-col" value="#dddddd" oninput="rp()"><input type="text" id="n-col-t" value="#dddddd" oninput="sc('n-col','n-col-t');rp()"></div></div>
+    <div class="f"><label>Barva hover</label><div class="crow"><input type="color" id="n-hov" value="#e8b4b8" oninput="rp()"><input type="text" id="n-hov-t" value="#e8b4b8" oninput="sc('n-hov','n-hov-t');rp()"></div></div>
+    <div class="slrow"><label>Velikost písma</label><input type="range" id="n-sz" min="11" max="20" value="14" oninput="v('n-sz-v',this.value+'px');rp()"><span class="val" id="n-sz-v">14px</span></div>
+    <div class="slrow"><label>Padding</label><input type="range" id="n-pad" min="6" max="28" value="12" oninput="v('n-pad-v',this.value+'px');rp()"><span class="val" id="n-pad-v">12px</span></div>
+    <div class="f"><label>Zarovnání</label><select id="n-align" onchange="rp()"><option value="flex-start">Vlevo</option><option value="center">Střed</option><option value="flex-end">Vpravo</option></select></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Položky menu</div>
+    <div class="ilist" id="nl"></div>
+    <div class="r2">
+      <div class="f"><label>Název</label><input type="text" id="n-name" placeholder="Galerie"></div>
+      <div class="f"><label>Odkaz</label><input type="text" id="n-url" placeholder="#galerie"></div>
+    </div>
+    <button class="btn btn-teal btn-full" onclick="addNav()">+ Přidat položku</button>
+  </div>
+</div>
+
+<!-- ── BUTTONS ── -->
+<div class="pane" id="pane-buttons">
+  <div class="sec">
+    <div class="sec-hd">Nové tlačítko</div>
+    <div class="f"><label>Text tlačítka</label><input type="text" id="bt-text" value="Kontaktovat mě"></div>
+    <div class="f"><label>Odkaz (href)</label><input type="text" id="bt-href" value="#kontakt"></div>
+    <div class="f"><label>Barva pozadí</label><div class="crow"><input type="color" id="bt-bg" value="#4a8b8b"><input type="text" id="bt-bg-t" value="#4a8b8b" oninput="sc('bt-bg','bt-bg-t')"></div></div>
+    <div class="f"><label>Barva textu</label><div class="crow"><input type="color" id="bt-col" value="#ffffff"><input type="text" id="bt-col-t" value="#ffffff" oninput="sc('bt-col','bt-col-t')"></div></div>
+    <div class="slrow"><label>Zaoblení</label><input type="range" id="bt-r" min="0" max="50" value="6" oninput="v('bt-r-v',this.value+'px')"><span class="val" id="bt-r-v">6px</span></div>
+    <div class="slrow"><label>Padding V</label><input type="range" id="bt-py" min="4" max="24" value="10" oninput="v('bt-py-v',this.value+'px')"><span class="val" id="bt-py-v">10px</span></div>
+    <div class="slrow"><label>Padding H</label><input type="range" id="bt-px" min="8" max="60" value="22" oninput="v('bt-px-v',this.value+'px')"><span class="val" id="bt-px-v">22px</span></div>
+    <div class="f"><label>Styl</label><select id="bt-style"><option value="filled">Vyplněné</option><option value="outline">Obrys</option><option value="ghost">Ghost</option></select></div>
+    <button class="btn btn-teal btn-full" onclick="addBtn()">+ Přidat tlačítko</button>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Přidaná tlačítka</div>
+    <div class="ilist" id="btl"><span style="font-size:.72rem;color:#555;">Zatím žádná</span></div>
+  </div>
+</div>
+
+<!-- ── CARDS ── -->
+<div class="pane" id="pane-cards">
+  <div class="sec">
+    <div class="sec-hd">Styl karet</div>
+    <div class="f"><label>Nadpis sekce</label><input type="text" id="c-sh" value="Moje služby" oninput="rp()"></div>
+    <div class="f"><label>Barva pozadí karty</label><div class="crow"><input type="color" id="c-bg" value="#ffffff" oninput="rp()"><input type="text" id="c-bg-t" value="#ffffff" oninput="sc('c-bg','c-bg-t');rp()"></div></div>
+    <div class="f"><label>Barva nadpisu</label><div class="crow"><input type="color" id="c-hcol" value="#1a1a1a" oninput="rp()"><input type="text" id="c-hcol-t" value="#1a1a1a" oninput="sc('c-hcol','c-hcol-t');rp()"></div></div>
+    <div class="f"><label>Barva tlačítka</label><div class="crow"><input type="color" id="c-bcol" value="#4a8b8b" oninput="rp()"><input type="text" id="c-bcol-t" value="#4a8b8b" oninput="sc('c-bcol','c-bcol-t');rp()"></div></div>
+    <div class="slrow"><label>Zaoblení</label><input type="range" id="c-r" min="0" max="24" value="8" oninput="v('c-r-v',this.value+'px');rp()"><span class="val" id="c-r-v">8px</span></div>
+    <div class="f"><label>Sloupce</label><select id="c-cols" onchange="rp()"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Přidat kartu</div>
+    <div class="f"><label>Nadpis</label><input type="text" id="c-title" placeholder="Blackwork"></div>
+    <div class="f"><label>Text</label><textarea id="c-text" placeholder="Popis stylu..."></textarea></div>
+    <div class="f"><label>Text tlačítka</label><input type="text" id="c-btn" value="Více info"></div>
+    <div class="f"><label>Odkaz tlačítka</label><input type="text" id="c-href" value="#kontakt"></div>
+    <button class="btn btn-teal btn-full" onclick="addCard()">+ Přidat kartu</button>
+    <div class="ilist" style="margin-top:8px;" id="cl"></div>
+  </div>
+</div>
+
+<!-- ── GALLERY ── -->
+<div class="pane" id="pane-gallery">
+  <div class="sec">
+    <div class="sec-hd">Nastavení galerie</div>
+    <div class="f"><label>Nadpis sekce</label><input type="text" id="g-sh" value="Galerie" oninput="rp()"></div>
+    <div class="f"><label>Sloupce</label><select id="g-cols" onchange="rp()"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option></select></div>
+    <div class="slrow"><label>Mezera</label><input type="range" id="g-gap" min="0" max="24" value="8" oninput="v('g-gap-v',this.value+'px');rp()"><span class="val" id="g-gap-v">8px</span></div>
+    <div class="slrow"><label>Zaoblení</label><input type="range" id="g-r" min="0" max="20" value="6" oninput="v('g-r-v',this.value+'px');rp()"><span class="val" id="g-r-v">6px</span></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Nahrát fotky</div>
+    <div class="upz" onclick="document.getElementById('ginp').click()">
+      <input type="file" id="ginp" accept="image/*" multiple onchange="addGal(event)">
+      <div class="ui">📷</div><div class="ul">Klikni – <strong>vybrat fotky</strong> (více najednou)</div>
+    </div>
+    <div class="ilist" id="gl"><span style="font-size:.72rem;color:#555;">Zatím žádné fotky</span></div>
+  </div>
+</div>
+
+<!-- ── FORM ── -->
+<div class="pane" id="pane-form">
+  <div class="sec">
+    <div class="sec-hd">Nastavení formuláře</div>
+    <div class="f"><label>Nadpis sekce</label><input type="text" id="fm-sh" value="Napište mi" oninput="rp()"></div>
+    <div class="f"><label>Popis pod nadpisem</label><input type="text" id="fm-desc" value="Odpovím do 24 hodin" oninput="rp()"></div>
+    <div class="f"><label>Formspree endpoint (action)</label><input type="text" id="fm-action" placeholder="https://formspree.io/f/XXXX"></div>
+    <div class="f"><label>Barva pozadí formuláře</label><div class="crow"><input type="color" id="fm-bg" value="#ffffff" oninput="rp()"><input type="text" id="fm-bg-t" value="#ffffff" oninput="sc('fm-bg','fm-bg-t');rp()"></div></div>
+    <div class="f"><label>Barva polí</label><div class="crow"><input type="color" id="fm-ibg" value="#f5f0eb" oninput="rp()"><input type="text" id="fm-ibg-t" value="#f5f0eb" oninput="sc('fm-ibg','fm-ibg-t');rp()"></div></div>
+    <div class="f"><label>Barva tlačítka</label><div class="crow"><input type="color" id="fm-bbg" value="#4a8b8b" oninput="rp()"><input type="text" id="fm-bbg-t" value="#4a8b8b" oninput="sc('fm-bbg','fm-bbg-t');rp()"></div></div>
+    <div class="f"><label>Text tlačítka</label><input type="text" id="fm-btxt" value="Odeslat zprávu" oninput="rp()"></div>
+    <div class="slrow"><label>Zaoblení polí</label><input type="range" id="fm-r" min="0" max="20" value="6" oninput="v('fm-r-v',this.value+'px');rp()"><span class="val" id="fm-r-v">6px</span></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Pole formuláře</div>
+    <div class="ilist" id="fml"></div>
+    <div class="r2">
+      <div class="f"><label>Popisek</label><input type="text" id="fm-label" placeholder="Jméno"></div>
+      <div class="f"><label>Typ</label>
+        <select id="fm-type">
+          <option value="text">Text</option>
+          <option value="email">Email</option>
+          <option value="tel">Telefon</option>
+          <option value="textarea">Víceřádkový</option>
+        </select>
+      </div>
+    </div>
+    <div class="f"><label>Povinné pole?</label><select id="fm-req"><option value="1">Ano</option><option value="0">Ne</option></select></div>
+    <button class="btn btn-teal btn-full" onclick="addField()">+ Přidat pole</button>
+  </div>
+</div>
+
+<!-- ── SEO ── -->
+<div class="pane" id="pane-seo">
+  <div class="sec">
+    <div class="sec-hd">SEO – Vyhledávače</div>
+    <div class="f"><label>Titulek stránky (title)</label><input type="text" id="seo-title" value="Neumím plavat – Tetování Praha"></div>
+    <div class="f"><label>Popis (meta description)</label><textarea id="seo-desc" style="min-height:70px;">Profesionální tetování v Praze. Specializace na jemné linky, botanické motivy a miniaturní ilustrace. Objednávky přes Instagram nebo email.</textarea></div>
+    <div class="f"><label>Klíčová slova</label><input type="text" id="seo-kw" value="tetování, tattoo, Praha, blackwork, botanika"></div>
+    <div class="f"><label>Autor</label><input type="text" id="seo-author" value="Neumím plavat"></div>
+    <div class="f"><label>OG obrázek (URL)</label><input type="text" id="seo-og" placeholder="https://... odkaz na náhledový obrázek"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Analytika</div>
+    <div class="f"><label>Google Analytics ID</label><input type="text" id="seo-ga" placeholder="G-XXXXXXXXXX"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-hd">Favicon</div>
+    <div class="upz" onclick="tu('favicon')"><input type="file" id="inp-favicon" accept="image/*,.ico" onchange="li(event,'favicon')"><div class="ui">🔖</div><div class="ul">Klikni – <strong>ikona webu</strong> (favicon)</div></div>
+    <div class="thumb" id="th-favicon"><span class="noimg">Žádný favicon</span></div>
+  </div>
+</div>
+
+</div><!-- sidebar-body -->
+</aside>
+
+<!-- PREVIEW -->
+<main class="preview" id="preview">
+  <div class="plabel">👁 Živý náhled webu</div>
+  <div class="pcard" id="pcard">
+    <div class="pcard-hd">
+      <span class="pcard-title" id="pcardtitle">Náhled webu</span>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-sm btn-ghost" onclick="uploadImages()">📤 Nahrát obrázky</button>
+        <button class="btn btn-sm btn-green" onclick="publish()">🚀 Uložit na GitHub</button>
+      </div>
+    </div>
+    <div id="pb"></div>
+  </div>
+  <div class="pcard" style="max-width:900px;width:100%;">
+    <div class="pcard-hd"><span class="pcard-title">📋 Log akcí</span><button class="btn btn-sm btn-ghost" onclick="document.getElementById('publog').innerHTML=''">Vymazat</button></div>
+    <div style="padding:10px;"><div class="logbox" id="publog"><span class="linf">Zatím žádná akce...</span></div></div>
+  </div>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const S={
+  gh:{token:'',user:'jrslvlbnsk-droid',repo:'neumimplavat',branch:'main'},
+  imgs:{header:null,bg:null,center:null,footer:null,favicon:null},
+  imgFiles:{header:null,bg:null,center:null,footer:null,favicon:null},
+  nav:[{name:'Úvod',url:'#'},{name:'Galerie',url:'#galerie'},{name:'O mně',url:'#o-mne'},{name:'Kontakt',url:'#kontakt'}],
+  btns:[],
+  cards:[],
+  gallery:[],
+  fields:[{label:'Jméno',type:'text',req:true},{label:'Email',type:'email',req:true},{label:'Zpráva',type:'textarea',req:true}],
+};
+let curTab='github';
+
+// ══════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════
+const g=id=>document.getElementById(id)?.value??'';
+const el=id=>document.getElementById(id);
+function v(id,val){const e=el(id);if(e)e.textContent=val;}
+function sc(cid,tid){
+  const c=el(cid),t=el(tid);if(!c||!t)return;
+  if(event.target===c)t.value=c.value;
+  else if(/^#[0-9a-fA-F]{6}$/.test(t.value))c.value=t.value;
+}
+function toast(msg,ok=true){
+  const t=el('toast');t.textContent=msg;
+  t.style.background=ok?'#4a8b8b':'#e74c3c';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+function log(msg,type='inf'){
+  const b=el('publog');if(!b)return;
+  if(b.innerHTML.includes('Zatím'))b.innerHTML='';
+  b.innerHTML+=`<div class="l${type}">${new Date().toLocaleTimeString('cs')} – ${msg}</div>`;
+  b.scrollTop=b.scrollHeight;
+}
+function ghlog(msg,type='inf'){
+  const b=el('gh-log');if(!b)return;
+  if(b.innerHTML.includes('Zadej'))b.innerHTML='';
+  b.innerHTML+=`<div class="l${type}">${new Date().toLocaleTimeString('cs')} – ${msg}</div>`;
+  b.scrollTop=b.scrollHeight;
+}
+
+// ══════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════
+function st(tab){
+  curTab=tab;
+  document.querySelectorAll('.tab').forEach((b,i)=>{
+    const tabs=['github','texty','design','images','nav','buttons','cards','gallery','form','seo'];
+    b.classList.toggle('on',tabs[i]===tab);
+  });
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  const p=el('pane-'+tab);if(p)p.classList.add('on');
+  el('pcardtitle').textContent={github:'GitHub nastavení',texty:'Texty & obsah',design:'Design & barvy',images:'Obrázky',nav:'Navigační menu',buttons:'Tlačítka',cards:'Karty / boxy',gallery:'Galerie',form:'Kontaktní formulář',seo:'SEO nastavení'}[tab]||tab;
+  rp();
+}
+
+// ══════════════════════════════════════════════
+//  RICH TEXT EDITOR
+// ══════════════════════════════════════════════
+function rte(id,cmd){document.execCommand(cmd,false,null);el(id).focus();rp();}
+function rteLink(id){
+  const url=prompt('Zadej URL odkazu:','https://');
+  if(url)document.execCommand('createLink',false,url);
+  el(id).focus();rp();
+}
+
+// ══════════════════════════════════════════════
+//  GITHUB
+// ══════════════════════════════════════════════
+function ghSave(){S.gh.token=g('gh-token');S.gh.user=g('gh-user');S.gh.repo=g('gh-repo');S.gh.branch=g('gh-branch');}
+async function ghFetch(url,opts={}){
+  return fetch(url,{...opts,headers:{'Authorization':`token ${S.gh.token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json',...(opts.headers||{})}});
+}
+async function ghTest(){
+  ghSave();
+  if(!S.gh.token){toast('Zadej GitHub token!',false);return;}
+  ghlog('Testuji připojení...','inf');
+  try{
+    const r=await ghFetch(`https://api.github.com/repos/${S.gh.user}/${S.gh.repo}`);
+    if(r.ok){
+      const d=await r.json();
+      ghlog(`✅ Připojeno: ${d.full_name}`,'ok');
+      el('ghpill').textContent='🟢 Připojeno';el('ghpill').className='gh-pill ok';
+      toast('GitHub připojen! ✓');
+    }else{
+      const e=await r.json();
+      ghlog(`❌ ${e.message}`,'err');
+      el('ghpill').textContent='🔴 Chyba';el('ghpill').className='gh-pill err';
+      toast('Chyba připojení',false);
+    }
+  }catch(e){ghlog(`❌ Síťová chyba: ${e.message}`,'err');toast('Síťová chyba',false);}
+}
+async function getSha(path){
+  try{
+    const r=await ghFetch(`https://api.github.com/repos/${S.gh.user}/${S.gh.repo}/contents/${path}?ref=${S.gh.branch}`);
+    if(r.ok){const d=await r.json();return d.sha;}
+  }catch{}return null;
+}
+async function pushFile(path,content,msg,isB64=false){
+  const sha=await getSha(path);
+  const body={message:msg,branch:S.gh.branch,content:isB64?content:btoa(unescape(encodeURIComponent(content)))};
+  if(sha)body.sha=sha;
+  const r=await ghFetch(`https://api.github.com/repos/${S.gh.user}/${S.gh.repo}/contents/${path}`,{method:'PUT',body:JSON.stringify(body)});
+  return r.ok;
+}
+
+// ══════════════════════════════════════════════
+//  IMAGES
+// ══════════════════════════════════════════════
+function tu(z){el('inp-'+z)?.click();}
+function li(event,z){
+  const file=event.target.files[0];if(!file)return;
+  S.imgFiles[z]=file;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    S.imgs[z]=e.target.result;
+    const th=el('th-'+z);
+    if(th)th.innerHTML=`<img src="${e.target.result}"><button class="clr" onclick="ci('${z}')">✕</button>`;
+    rp();
+  };
+  reader.readAsDataURL(file);
+}
+function ci(z){
+  S.imgs[z]=null;S.imgFiles[z]=null;
+  const th=el('th-'+z);if(th)th.innerHTML='<span class="noimg">Žádný obrázek</span>';
+  const inp=el('inp-'+z);if(inp)inp.value='';
+  rp();
+}
+
+// ══════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════
+function addNav(){
+  const n=g('n-name').trim();if(!n){toast('Zadej název',false);return;}
+  S.nav.push({name:n,url:g('n-url')||'#'});
+  el('n-name').value='';el('n-url').value='';rp();
+}
+function remNav(i){S.nav.splice(i,1);rp();}
+function renderNavList(){
+  el('nl').innerHTML=S.nav.map((it,i)=>`<div class="irow"><span class="il">🔗 ${it.name} → ${it.url}</span><button class="xbtn" onclick="remNav(${i})">🗑</button></div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  BUTTONS
+// ══════════════════════════════════════════════
+function addBtn(){
+  const t=g('bt-text').trim();if(!t){toast('Zadej text',false);return;}
+  S.btns.push({text:t,href:g('bt-href')||'#',bg:g('bt-bg'),col:g('bt-col'),r:g('bt-r'),py:g('bt-py'),px:g('bt-px'),style:g('bt-style')});
+  rp();
+}
+function remBtn(i){S.btns.splice(i,1);rp();}
+function renderBtnList(){
+  const l=el('btl');
+  l.innerHTML=S.btns.length?S.btns.map((b,i)=>`<div class="irow"><span class="il">🔘 ${b.text}</span><button class="xbtn" onclick="remBtn(${i})">🗑</button></div>`).join(''):'<span style="font-size:.72rem;color:#555;">Zatím žádná</span>';
+}
+
+// ══════════════════════════════════════════════
+//  CARDS
+// ══════════════════════════════════════════════
+function addCard(){
+  const t=g('c-title').trim();if(!t){toast('Zadej nadpis',false);return;}
+  S.cards.push({title:t,text:g('c-text'),btn:g('c-btn')||'Více',href:g('c-href')||'#'});
+  el('c-title').value='';el('c-text').value='';rp();
+}
+function remCard(i){S.cards.splice(i,1);rp();}
+function renderCardList(){
+  el('cl').innerHTML=S.cards.map((c,i)=>`<div class="irow"><span class="il">🃏 ${c.title}</span><button class="xbtn" onclick="remCard(${i})">🗑</button></div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  GALLERY
+// ══════════════════════════════════════════════
+function addGal(event){
+  Array.from(event.target.files).forEach(file=>{
+    const r=new FileReader();
+    r.onload=e=>{S.gallery.push({src:e.target.result,file,name:file.name});rp();};
+    r.readAsDataURL(file);
+  });
+  el('ginp').value='';
+}
+function remGal(i){S.gallery.splice(i,1);rp();}
+function renderGalList(){
+  const l=el('gl');
+  l.innerHTML=S.gallery.length?S.gallery.map((g,i)=>`<div class="irow"><span class="il">🖼 ${g.name}</span><button class="xbtn" onclick="remGal(${i})">🗑</button></div>`).join(''):'<span style="font-size:.72rem;color:#555;">Zatím žádné fotky</span>';
+}
+
+// ══════════════════════════════════════════════
+//  FORM
+// ══════════════════════════════════════════════
+function addField(){
+  const l=g('fm-label').trim();if(!l){toast('Zadej popisek',false);return;}
+  S.fields.push({label:l,type:g('fm-type'),req:g('fm-req')==='1'});
+  el('fm-label').value='';rp();
+}
+function remField(i){S.fields.splice(i,1);rp();}
+function renderFieldList(){
+  el('fml').innerHTML=S.fields.map((f,i)=>`<div class="irow"><span class="il">📝 ${f.label} (${f.type}${f.req?' *':''})</span><button class="xbtn" onclick="remField(${i})">🗑</button></div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  RENDER PREVIEW
+// ══════════════════════════════════════════════
+function rp(){
+  renderNavList();renderBtnList();renderCardList();renderGalList();renderFieldList();
+
+  const hi=S.imgs.header,bi=S.imgs.bg,ci2=S.imgs.center,fi=S.imgs.footer;
+  const hh=g('i-hh'),ho=parseInt(g('i-ho')||40)/100;
+  const bgop=parseFloat(g('i-bgop')||12)/100;
+  const ch=g('i-ch'),cr=g('i-cr');
+  const fh=g('i-fh'),fo=parseInt(g('i-fo')||55)/100;
+  const nbg=g('n-bg'),ncol=g('n-col'),nhov=g('n-hov'),nsz=g('n-sz'),npad=g('n-pad'),nalign=g('n-align');
+  const dbg=g('d-bg'),dtxt=g('d-text'),dhead=g('d-head'),dacc=g('d-accent');
+  const dfonthead=g('d-font-head'),dfontbody=g('d-font-body');
+  const dfsz=g('d-font-size'),dlh=g('d-lh');
+  const dmaxw=g('d-maxw'),dpad=g('d-pad');
+  const cbg=g('c-bg'),chcol=g('c-hcol'),cbcol=g('c-bcol'),cr2=g('c-r'),ccols=g('c-cols');
+  const gcols=g('g-cols'),ggap=g('g-gap'),gr=g('g-r');
+  const fmbg=g('fm-bg'),fmibg=g('fm-ibg'),fmbbg=g('fm-bbg'),fmbtxt=g('fm-btxt'),fmr=g('fm-r');
+
+  const txt_h1=g('txt-h1')||'Neumím plavat';
+  const txt_sub=g('txt-sub')||'Tetování s duší · Praha';
+  const txt_s1h=g('txt-s1h')||'Vítejte v mém ateliéru';
+  const txt_s2h=g('txt-s2h')||'O mně';
+  const rte1=el('rte1')?.innerHTML||'';
+  const rte2=el('rte2')?.innerHTML||'';
+  const txt_footer=g('txt-footer')||'© 2024 · Praha';
+  const txt_ig=g('txt-ig');
+  const txt_email=g('txt-email');
+  const fm_sh=g('fm-sh')||'Napište mi';
+  const fm_desc=g('fm-desc');
+  const c_sh=g('c-sh')||'Moje služby';
+  const g_sh=g('g-sh')||'Galerie';
+
+  // NAV links
+  const navlinks=S.nav.map(it=>`<a href="${it.url}" style="color:${ncol};padding:${npad}px 16px;font-size:${nsz}px;text-decoration:none;display:inline-block;transition:color .2s;" onmouseover="this.style.color='${nhov}'" onmouseout="this.style.color='${ncol}'">${it.name}</a>`).join('');
+
+  // BUTTONS
+  const btnsH=S.btns.map(b=>{
+    let s='';
+    if(b.style==='filled')s=`background:${b.bg};color:${b.col};border:none;`;
+    else if(b.style==='outline')s=`background:transparent;color:${b.bg};border:2px solid ${b.bg};`;
+    else s=`background:transparent;color:${b.bg};border:none;`;
+    return `<a href="${b.href}" style="${s}padding:${b.py}px ${b.px}px;border-radius:${b.r}px;text-decoration:none;font-size:14px;display:inline-block;font-family:sans-serif;font-weight:500;">${b.text}</a>`;
+  }).join('');
+
+  // CARDS
+  const cardSrc=S.cards.length?S.cards:[{title:'Blackwork',text:'Geometrické vzory a čisté linky.',btn:'Více',href:'#'},{title:'Botanika',text:'Jemné přírodní motivy.',btn:'Více',href:'#'}];
+  const cardsH=cardSrc.map(c=>`
+    <div style="background:${cbg};border-radius:${cr2}px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+      <div style="height:110px;background:#e0dbd5;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:.75rem;">📷 foto</div>
+      <div style="padding:14px;">
+        <div style="font-family:${dfonthead};font-size:1rem;color:${chcol};margin-bottom:5px;">${c.title}</div>
+        <div style="font-size:.82rem;color:#666;line-height:1.6;">${c.text}</div>
+        <a href="${c.href}" style="display:inline-block;margin-top:10px;padding:6px 14px;background:${cbcol};color:#fff;text-decoration:none;border-radius:5px;font-size:.77rem;">${c.btn}</a>
+      </div>
+    </div>`).join('');
+
+  // GALLERY
+  const galSrc=S.gallery.length?S.gallery:null;
+  const galH=galSrc
+    ?galSrc.map(gi=>`<div style="border-radius:${gr}px;overflow:hidden;aspect-ratio:1;"><img src="${gi.src}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>`).join('')
+    :Array(6).fill(0).map((_,i)=>`<div style="background:#e0dbd5;border-radius:${gr}px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:.73rem;">foto ${i+1}</div>`).join('');
+
+  // FORM fields
+  const formH=S.fields.map(f=>{
+    const inp=f.type==='textarea'
+      ?`<textarea placeholder="${f.label}" style="width:100%;padding:9px 12px;background:${fmibg};border:none;border-radius:${fmr}px;font-family:sans-serif;min-height:70px;resize:vertical;" ${f.req?'required':''}></textarea>`
+      :`<input type="${f.type}" placeholder="${f.label}" style="width:100%;padding:9px 12px;background:${fmibg};border:none;border-radius:${fmr}px;" ${f.req?'required':''}="">`;
+    return `<div><div style="font-size:.73rem;color:#888;margin-bottom:3px;">${f.label}${f.req?' *':''}</div>${inp}</div>`;
+  }).join('');
+
+  // FOOTER social
+  const socials=[];
+  if(txt_ig)socials.push(`<a href="${txt_ig}" style="color:#e8b4b8;text-decoration:none;margin:0 6px;">Instagram</a>`);
+  if(txt_email)socials.push(`<a href="mailto:${txt_email}" style="color:#e8b4b8;text-decoration:none;margin:0 6px;">Email</a>`);
+
+  el('pb').innerHTML=`
+  <div style="font-family:${dfontbody};font-size:${dfsz}px;color:${dtxt};">
+    <!-- HEADER -->
+    <div style="position:relative;height:${hh}px;background:#2a2a2a;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+      ${hi?`<div style="position:absolute;inset:0;background-image:url(${hi});background-size:cover;background-position:${g('i-hpos')};"></div>`:''}
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,${ho});"></div>
+      <div style="position:relative;z-index:2;text-align:center;padding:16px;">
+        <div style="font-family:${dfonthead};font-size:clamp(1.6rem,4vw,2.4rem);color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.5);">${txt_h1}</div>
+        <div style="color:rgba(255,255,255,.72);font-style:italic;margin-top:5px;font-size:.85rem;">${txt_sub}</div>
+      </div>
+    </div>
+    <!-- NAV -->
+    <div style="background:${nbg};display:flex;justify-content:${nalign};flex-wrap:wrap;">${navlinks}</div>
+    <!-- BODY -->
+    <div style="position:relative;background:${dbg};">
+      ${bi?`<div style="position:absolute;inset:0;background-image:url(${bi});background-size:cover;opacity:${bgop};pointer-events:none;"></div>`:''}
+      <div style="position:relative;z-index:1;padding:${dpad}px;max-width:${dmaxw}px;margin:0 auto;">
+
+        <!-- SEKCE 1 -->
+        <div style="margin-bottom:24px;">
+          <div style="font-family:${dfonthead};font-size:1.5rem;color:${dhead};margin-bottom:10px;">${txt_s1h}</div>
+          <div style="line-height:1.${dlh};color:${dtxt};">${rte1}</div>
+        </div>
+
+        <!-- STŘEDNÍ OBRÁZEK -->
+        ${ci2?`<div style="border-radius:${cr}px;overflow:hidden;margin-bottom:24px;"><img src="${ci2}" style="width:100%;max-height:${ch}px;object-fit:cover;display:block;"></div>`:''}
+
+        <!-- TLAČÍTKA -->
+        ${btnsH?`<div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;">${btnsH}</div>`:''}
+
+        <!-- SEKCE 2 -->
+        <div style="margin-bottom:24px;">
+          <div style="font-family:${dfonthead};font-size:1.5rem;color:${dhead};margin-bottom:10px;">${txt_s2h}</div>
+          <div style="line-height:1.${dlh};color:${dtxt};">${rte2}</div>
+        </div>
+
+        <!-- KARTY -->
+        ${(S.cards.length||true)?`<div style="margin-bottom:28px;">
+          <div style="font-family:${dfonthead};font-size:1.5rem;color:${dhead};margin-bottom:14px;">${c_sh}</div>
+          <div style="display:grid;grid-template-columns:repeat(${ccols},1fr);gap:14px;">${cardsH}</div>
+        </div>`:''}
+
+        <!-- GALERIE -->
+        <div style="margin-bottom:28px;">
+          <div style="font-family:${dfonthead};font-size:1.5rem;color:${dhead};margin-bottom:14px;" id="galerie">${g_sh}</div>
+          <div style="display:grid;grid-template-columns:repeat(${gcols},1fr);gap:${ggap}px;">${galH}</div>
+        </div>
+
+        <!-- FORMULÁŘ -->
+        <div style="margin-bottom:28px;" id="kontakt">
+          <div style="font-family:${dfonthead};font-size:1.5rem;color:${dhead};margin-bottom:6px;">${fm_sh}</div>
+          ${fm_desc?`<div style="font-size:.82rem;color:#888;margin-bottom:14px;">${fm_desc}</div>`:''}
+          <div style="background:${fmbg};padding:22px;border-radius:8px;max-width:480px;">
+            <div style="display:flex;flex-direction:column;gap:10px;">${formH}</div>
+            <button style="margin-top:14px;padding:9px 22px;background:${fmbbg};color:#fff;border:none;border-radius:${fmr}px;cursor:pointer;font-size:.88rem;font-weight:500;">${fmbtxt}</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- FOOTER -->
+    <div style="position:relative;min-height:${fh}px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+      ${fi?`<div style="position:absolute;inset:0;background-image:url(${fi});background-size:cover;background-position:center;"></div>`:''}
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,${fo});"></div>
+      <div style="position:relative;z-index:2;text-align:center;color:#aaa;font-size:.78rem;padding:16px;line-height:2;">
+        <div style="font-family:${dfonthead};color:#e8b4b8;font-size:1rem;margin-bottom:6px;">${txt_h1}</div>
+        ${socials.length?`<div>${socials.join('')}</div>`:''}
+        <div style="margin-top:6px;">${txt_footer}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  BUILD HTML OUTPUT
+// ══════════════════════════════════════════════
+function buildHTML(){
+  const hi=S.imgs.header,bi=S.imgs.bg,ci2=S.imgs.center,fi=S.imgs.footer;
+  const hh=g('i-hh'),ho=parseInt(g('i-ho')||40)/100;
+  const bgop=parseFloat(g('i-bgop')||12)/100;
+  const ch=g('i-ch'),cr=g('i-cr');
+  const fh=g('i-fh'),fo=parseInt(g('i-fo')||55)/100;
+  const nbg=g('n-bg'),ncol=g('n-col'),nhov=g('n-hov'),nsz=g('n-sz'),npad=g('n-pad'),nalign=g('n-align');
+  const dbg=g('d-bg'),dtxt=g('d-text'),dhead=g('d-head'),dacc=g('d-accent');
+  const dfh=g('d-font-head'),dfb=g('d-font-body'),dfsz=g('d-font-size'),dlh=g('d-lh');
+  const dmaxw=g('d-maxw'),dpad=g('d-pad');
+  const cbg=g('c-bg'),chcol=g('c-hcol'),cbcol=g('c-bcol'),cr2=g('c-r'),ccols=g('c-cols');
+  const gcols=g('g-cols'),ggap=g('g-gap'),gr=g('g-r');
+  const fmbg=g('fm-bg'),fmibg=g('fm-ibg'),fmbbg=g('fm-bbg'),fmbtxt=g('fm-btxt'),fmr=g('fm-r'),fmaction=g('fm-action');
+  const txt_h1=g('txt-h1')||'Neumím plavat';
+  const txt_sub=g('txt-sub');
+  const txt_s1h=g('txt-s1h');const rte1html=el('rte1')?.innerHTML||'';
+  const txt_s2h=g('txt-s2h');const rte2html=el('rte2')?.innerHTML||'';
+  const txt_footer=g('txt-footer');const txt_ig=g('txt-ig');const txt_email=g('txt-email');
+  const fm_sh=g('fm-sh');const fm_desc=g('fm-desc');
+  const c_sh=g('c-sh');const g_sh=g('g-sh');
+  const seoTitle=g('seo-title')||txt_h1;
+  const seoDesc=g('seo-desc');const seoKw=g('seo-kw');const seoAuthor=g('seo-author');
+  const seoOg=g('seo-og');const seoGa=g('seo-ga');
+
+  const navH=S.nav.map(it=>`  <a href="${it.url}">${it.name}</a>`).join('
+');
+  const btnsH=S.btns.map(b=>{
+    let cls=b.style==='filled'?'btn-filled':b.style==='outline'?'btn-outline':'btn-ghost';
+    return `  <a href="${b.href}" class="${cls}" style="--c:${b.bg};--t:${b.col};--r:${b.r}px;--py:${b.py}px;--px:${b.px}px;">${b.text}</a>`;
+  }).join('
+');
+  const cardsH=S.cards.map((c,i)=>`
+  <div class="card">
+    <div class="card-img"><img src="images/karta${i+1}.jpg" alt="${c.title}"></div>
+    <div class="card-body">
+      <h3>${c.title}</h3>
+      <p>${c.text}</p>
+      <a href="${c.href}" class="card-link">${c.btn}</a>
+    </div>
+  </div>`).join('');
+  const galH=S.gallery.map(gi=>`  <img src="images/${gi.name}" alt="Tetování" loading="lazy">`).join('
+');
+  const fieldsH=S.fields.map(f=>
+    f.type==='textarea'
+      ?`  <div class="field-wrap"><label>${f.label}</label><textarea name="${f.label.toLowerCase().replace(/\s/g,'_')}" placeholder="${f.label}"${f.req?' required':''}></textarea></div>`
+      :`  <div class="field-wrap"><label>${f.label}</label><input type="${f.type}" name="${f.label.toLowerCase().replace(/\s/g,'_')}" placeholder="${f.label}"${f.req?' required':''}></div>`
+  ).join('
+');
+
+  const gaCode=seoGa?`
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=${seoGa}"><\/script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${seoGa}');<\/script>`:'';
+
+  return `<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${seoTitle}</title>
+  <meta name="description" content="${seoDesc}">
+  <meta name="keywords" content="${seoKw}">
+  <meta name="author" content="${seoAuthor}">
+  ${seoOg?`<meta property="og:image" content="${seoOg}">
+  <meta property="og:title" content="${seoTitle}">
+  <meta property="og:description" content="${seoDesc}">`:''}
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  ${S.imgs.favicon?`<link rel="icon" href="images/favicon.png">`:''}${gaCode}
+</head>
+<body>
+
+  <!-- ZÁHLAVÍ -->
+  <header class="site-header">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>${txt_h1}</h1>
+      ${txt_sub?`<p>${txt_sub}</p>`:''}
+    </div>
+  </header>
+
+  <!-- NAVIGACE -->
+  <nav class="site-nav">
+${navH}
+  </nav>
+
+  <!-- OBSAH -->
+  <main class="site-body">
+    <div class="body-bg"></div>
+    <div class="body-content">
+
+      <section class="text-section">
+        <h2>${txt_s1h}</h2>
+        <div class="rich-text">${rte1html}</div>
+      </section>
+
+      ${ci2?`<div class="center-image-wrap">
+        <img src="images/stred.jpg" alt="${txt_s1h}" class="center-image">
+      </div>`:''}
+
+      ${btnsH?`<div class="btn-group">
+${btnsH}
+      </div>`:''}
+
+      <section class="text-section">
+        <h2>${txt_s2h}</h2>
+        <div class="rich-text">${rte2html}</div>
+      </section>
+
+      ${S.cards.length?`<section class="cards-section" id="sluzby">
+        <h2>${c_sh}</h2>
+        <div class="cards-grid">
+${cardsH}
+        </div>
+      </section>`:''}
+
+      ${S.gallery.length?`<section class="gallery-section" id="galerie">
+        <h2>${g_sh}</h2>
+        <div class="gallery-grid">
+${galH}
+        </div>
+      </section>`:''}
+
+      <section class="form-section" id="kontakt">
+        <h2>${fm_sh}</h2>
+        ${fm_desc?`<p class="form-desc">${fm_desc}</p>`:''}
+        <form class="contact-form" action="${fmaction||'#'}" method="POST">
+${fieldsH}
+          <button type="submit" class="form-submit">${fmbtxt}</button>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ZÁPATÍ -->
+  <footer class="site-footer">
+    <div class="footer-overlay"></div>
+    <div class="footer-content">
+      <strong class="footer-name">${txt_h1}</strong>
+      ${txt_ig||txt_email?`<div class="footer-social">
+        ${txt_ig?`<a href="${txt_ig}" target="_blank">Instagram</a>`:''}
+        ${txt_email?`<a href="mailto:${txt_email}">Email</a>`:''}
+      </div>`:''}
+      <p>${txt_footer}</p>
+    </div>
+  </footer>
+
+</body>
+</html>`;
+}
+
+function buildCSS(){
+  const nbg=g('n-bg'),ncol=g('n-col'),nhov=g('n-hov'),nsz=g('n-sz'),npad=g('n-pad'),nalign=g('n-align');
+  const dbg=g('d-bg'),dtxt=g('d-text'),dhead=g('d-head'),dacc=g('d-accent');
+  const dfh=g('d-font-head'),dfb=g('d-font-body'),dfsz=g('d-font-size'),dlh=g('d-lh');
+  const dmaxw=g('d-maxw'),dpad=g('d-pad');
+  const hh=g('i-hh'),ho=parseInt(g('i-ho')||40)/100,hpos=g('i-hpos');
+  const bgop=parseFloat(g('i-bgop')||12)/100;
+  const ch=g('i-ch'),cr=g('i-cr');
+  const fh=g('i-fh'),fo=parseInt(g('i-fo')||55)/100;
+  const cbg=g('c-bg'),chcol=g('c-hcol'),cbcol=g('c-bcol'),cr2=g('c-r'),ccols=g('c-cols');
+  const gcols=g('g-cols'),ggap=g('g-gap'),gr=g('g-r');
+  const fmbg=g('fm-bg'),fmibg=g('fm-ibg'),fmbbg=g('fm-bbg'),fmr=g('fm-r');
+
+  return `/* ═══════════════════════════════
+   Neumimplavat – style.css
+   Generováno editorem
+═══════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent: ${dacc};
+  --text:   ${dtxt};
+  --head:   ${dhead};
+  --bg:     ${dbg};
+}
+
+body {
+  font-family: ${dfb};
+  font-size: ${dfsz}px;
+  line-height: 1.${dlh};
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ── ZÁHLAVÍ ── */
+.site-header {
+  position: relative;
+  height: ${hh}px;
+  background-image: url('images/header.jpg');
+  background-size: cover;
+  background-position: ${hpos};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.header-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,${ho});
+}
+.header-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 16px;
+}
+.header-content h1 {
+  font-family: ${dfh};
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  color: #fff;
+  text-shadow: 0 2px 14px rgba(0,0,0,.5);
+}
+.header-content p {
+  color: rgba(255,255,255,.75);
+  font-style: italic;
+  margin-top: 6px;
+}
+
+/* ── NAVIGACE ── */
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: ${nalign};
+  background: ${nbg};
+}
+.site-nav a {
+  color: ${ncol};
+  padding: ${npad}px 16px;
+  font-size: ${nsz}px;
+  text-decoration: none;
+  display: inline-block;
+  transition: color .2s;
+}
+.site-nav a:hover { color: ${nhov}; }
+
+/* ── TĚLO ── */
+.site-body { position: relative; background: ${dbg}; }
+.body-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('images/bg.jpg');
+  background-size: cover;
+  opacity: ${bgop};
+  pointer-events: none;
+  z-index: 0;
+}
+.body-content {
+  position: relative;
+  z-index: 1;
+  max-width: ${dmaxw}px;
+  margin: 0 auto;
+  padding: ${dpad}px;
+}
+
+/* ── SEKCE ── */
+.text-section { margin-bottom: 32px; }
+.text-section h2,
+.cards-section h2,
+.gallery-section h2,
+.form-section h2 {
+  font-family: ${dfh};
+  font-size: 1.7rem;
+  color: var(--head);
+  margin-bottom: 12px;
+}
+.rich-text { color: var(--text); line-height: 1.8; }
+.rich-text a { color: var(--accent); }
+.rich-text ul { padding-left: 20px; margin-top: 8px; }
+
+/* ── STŘEDNÍ OBRÁZEK ── */
+.center-image-wrap {
+  border-radius: ${cr}px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+.center-image {
+  width: 100%;
+  max-height: ${ch}px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── TLAČÍTKA ── */
+.btn-group { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
+.btn-filled, .btn-outline, .btn-ghost {
+  display: inline-block;
+  padding: var(--py,10px) var(--px,22px);
+  border-radius: var(--r,6px);
+  font-family: inherit;
+  font-size: .9rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity .2s, transform .15s;
+}
+.btn-filled { background: var(--c); color: var(--t); border: none; }
+.btn-outline { background: transparent; color: var(--c); border: 2px solid var(--c); }
+.btn-ghost { background: transparent; color: var(--c); border: none; }
+.btn-filled:hover, .btn-outline:hover, .btn-ghost:hover { opacity: .82; transform: translateY(-1px); }
+
+/* ── KARTY ── */
+.cards-section { margin-bottom: 32px; }
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(${ccols}, 1fr);
+  gap: 18px;
+  margin-top: 16px;
+}
+.card { background: ${cbg}; border-radius: ${cr2}px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,.08); transition: transform .2s, box-shadow .2s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+.card-img img { width: 100%; height: 200px; object-fit: cover; display: block; }
+.card-body { padding: 16px; }
+.card-body h3 { font-family: ${dfh}; font-size: 1.05rem; color: ${chcol}; margin-bottom: 6px; }
+.card-body p { font-size: .84rem; color: #666; line-height: 1.6; }
+.card-link { display: inline-block; margin-top: 12px; padding: 7px 16px; background: ${cbcol}; color: #fff; text-decoration: none; border-radius: 5px; font-size: .8rem; transition: opacity .2s; }
+.card-link:hover { opacity: .85; }
+
+/* ── GALERIE ── */
+.gallery-section { margin-bottom: 32px; }
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(${gcols}, 1fr);
+  gap: ${ggap}px;
+  margin-top: 16px;
+}
+.gallery-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: ${gr}px; display: block; transition: opacity .2s, transform .2s; cursor: pointer; }
+.gallery-grid img:hover { opacity: .9; transform: scale(1.02); }
+
+/* ── FORMULÁŘ ── */
+.form-section { margin-bottom: 40px; }
+.form-desc { color: #888; font-size: .85rem; margin-bottom: 16px; }
+.contact-form { max-width: 500px; margin-top: 16px; }
+.field-wrap { margin-bottom: 12px; }
+.field-wrap label { display: block; font-size: .78rem; color: #888; margin-bottom: 4px; }
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: ${fmibg};
+  border: 1px solid #ddd;
+  border-radius: ${fmr}px;
+  font-family: inherit;
+  font-size: .9rem;
+  transition: border .2s;
+}
+.contact-form input:focus,
+.contact-form textarea:focus { outline: none; border-color: var(--accent); }
+.contact-form textarea { min-height: 100px; resize: vertical; }
+.form-submit {
+  margin-top: 6px;
+  padding: 10px 26px;
+  background: ${fmbbg};
+  color: #fff;
+  border: none;
+  border-radius: ${fmr}px;
+  cursor: pointer;
+  font-size: .9rem;
+  font-weight: 500;
+  transition: opacity .2s, transform .15s;
+}
+.form-submit:hover { opacity: .85; transform: translateY(-1px); }
+
+/* ── ZÁPATÍ ── */
+.site-footer {
+  position: relative;
+  min-height: ${fh}px;
+  background-image: url('images/footer.jpg');
+  background-size: cover;
+  background-position: center;
+  background-color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.footer-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,${fo});
+}
+.footer-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #aaa;
+  font-size: .82rem;
+  padding: 20px;
+  line-height: 2;
+}
+.footer-name { font-family: ${dfh}; color: #e8b4b8; font-size: 1rem; display: block; margin-bottom: 6px; }
+.footer-social a { color: #e8b4b8; text-decoration: none; margin: 0 8px; transition: opacity .2s; }
+.footer-social a:hover { opacity: .75; }
+
+/* ── RESPONZIVNÍ ── */
+@media (max-width: 640px) {
+  .cards-grid { grid-template-columns: 1fr; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .body-content { padding: 20px 16px; }
+  .header-content h1 { font-size: 1.8rem; }
+}`;
+}
+
+// ══════════════════════════════════════════════
+//  PUBLISH
+// ══════════════════════════════════════════════
+async function publish(){
+  ghSave();
+  if(!S.gh.token){toast('Nejdřív nastav GitHub token!',false);return;}
+  log('Generuji soubory...','inf');
+  const html=buildHTML();
+  const css=buildCSS();
+  log('Nahrávám index.html...','inf');
+  const ok1=await pushFile('index.html',html,'Update index.html via editor');
+  if(ok1)log('✅ index.html uložen','ok');
+  else{log('❌ Chyba index.html','err');toast('Chyba!',false);return;}
+  log('Nahrávám style.css...','inf');
+  const ok2=await pushFile('style.css',css,'Update style.css via editor');
+  if(ok2)log('✅ style.css uložen','ok');
+  else log('❌ Chyba style.css','err');
+  if(ok1&&ok2){
+    toast('Web uložen na GitHub! 🚀');
+    log(`🌐 https://${S.gh.user}.github.io/${S.gh.repo}/`,'ok');
+  }
+}
+
+async function uploadImages(){
+  ghSave();
+  if(!S.gh.token){toast('Nejdřív nastav GitHub token!',false);return;}
+  const map={header:'header.jpg',bg:'bg.jpg',center:'stred.jpg',footer:'footer.jpg',favicon:'favicon.png'};
+  let n=0;
+  for(const[z,name]of Object.entries(map)){
+    if(!S.imgFiles[z])continue;
+    log(`Nahrávám images/${name}...`,'inf');
+    const b64=S.imgs[z].split(',')[1];
+    const ok=await pushFile(`images/${name}`,b64,`Update ${name}`,true);
+    if(ok){log(`✅ images/${name}`,'ok');n++;}
+    else log(`❌ Chyba: ${name}`,'err');
+  }
+  for(const gi of S.gallery){
+    if(!gi.file)continue;
+    log(`Nahrávám images/${gi.name}...`,'inf');
+    const b64=gi.src.split(',')[1];
+    const ok=await pushFile(`images/${gi.name}`,b64,`Gallery: ${gi.name}`,true);
+    if(ok){log(`✅ images/${gi.name}`,'ok');n++;}
+    else log(`❌ Chyba: ${gi.name}`,'err');
+  }
+  toast(n>0?`Nahráno ${n} obrázků ✓`:'Žádné obrázky',n>0);
+}
+
+// ── INIT ──
+rp();
+</script>
+</body>
+</html>
